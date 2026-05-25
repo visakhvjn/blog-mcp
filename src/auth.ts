@@ -10,21 +10,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
      */
     async signIn({ user }) {
       if (!user.email) {
+        console.error("[auth] Google sign-in denied: no email on user profile");
         return false;
       }
 
-      await prisma.user.upsert({
-        where: { email: user.email },
-        create: {
-          email: user.email,
-          name: user.name ?? null,
-          image: user.image ?? null,
-        },
-        update: {
-          name: user.name ?? null,
-          image: user.image ?? null,
-        },
-      });
+      try {
+        await prisma.user.upsert({
+          where: { email: user.email },
+          create: {
+            email: user.email,
+            name: user.name ?? null,
+            image: user.image ?? null,
+          },
+          update: {
+            name: user.name ?? null,
+            image: user.image ?? null,
+          },
+        });
+      } catch (err) {
+        // Fails on Vercel if DATABASE_URL is missing or MongoDB blocks the connection.
+        console.error("[auth] signIn upsert failed:", err);
+        return false;
+      }
 
       return true;
     },
