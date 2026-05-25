@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+/// App user (Google sign-in). Username is set during onboarding.
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  image     String?
+  username  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+}
+
+model Post {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String     @db.ObjectId
+  user        User       @relation(fields: [userId], references: [id])
+  title       String
+  slug        String
+  content     String
+  excerpt     String?
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([userId, slug])
+  @@index([userId, status])
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}

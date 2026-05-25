@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog MCP
 
-## Getting Started
+Phased blogging platform with MCP authoring for Cursor. **Phase 1** includes Google sign-in, username onboarding, and logout.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+
+- MongoDB Atlas cluster (or local MongoDB)
+- Google OAuth credentials
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Copy environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Fill in:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | MongoDB connection string |
+| `AUTH_SECRET` | Random secret (`openssl rand -base64 32`) |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
+| `AUTH_URL` / `NEXTAUTH_URL` | `http://localhost:3000` for local dev |
+
+3. Google Cloud Console → **APIs & Services → Credentials** → OAuth 2.0 Client ID (Web):
+
+   - Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+
+4. Push the Prisma schema to MongoDB:
+
+```bash
+npm run db:push
+```
+
+5. Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Phase 1 flows
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Sign in** — Home or `/login` → Google OAuth
+- **Onboarding** — First-time users choose a unique username at `/onboarding`
+- **Dashboard** — `/dashboard` shows profile and username; **Sign out** returns to home
 
-## Learn More
+## Posts (Phase 2)
 
-To learn more about Next.js, take a look at the following resources:
+### Dashboard routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Route | Action |
+|-------|--------|
+| `/dashboard/posts` | List all your posts |
+| `/dashboard/posts/new` | Create post (markdown) |
+| `/dashboard/posts/[id]/edit` | Edit or delete post |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### REST API (session cookie — sign in via browser first)
 
-## Deploy on Vercel
+| Method | Path | Action |
+|--------|------|--------|
+| `GET` | `/api/posts` | List posts |
+| `POST` | `/api/posts` | Create post (JSON body) |
+| `GET` | `/api/posts/:id` | Get one post |
+| `PATCH` | `/api/posts/:id` | Update post |
+| `DELETE` | `/api/posts/:id` | Delete post |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Example create body:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+{
+  "title": "Hello world",
+  "content": "# Hi\n\nMarkdown content.",
+  "status": "DRAFT",
+  "excerpt": "Optional short summary",
+  "slug": "optional-custom-slug"
+}
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run db:push` | Sync Prisma schema to MongoDB |
+| `npm run db:generate` | Regenerate Prisma client |
+
+## Roadmap
+
+- **Phase 2** — Post CRUD in dashboard
+- **Phase 3** — Public portfolio at `/{username}`
+- **Phase 4** — API keys + MCP endpoint for Cursor
