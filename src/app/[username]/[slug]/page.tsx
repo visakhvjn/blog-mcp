@@ -1,4 +1,5 @@
 import { MarkdownContent } from "@/components/markdown-content";
+import { PageShell } from "@/components/page-shell";
 import { getPublishedPostByUsernameAndSlug } from "@/services/portfolio-service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,9 +8,6 @@ type PageProps = {
   params: Promise<{ username: string; slug: string }>;
 };
 
-/**
- * Public single post page (published only).
- */
 export async function generateMetadata({ params }: PageProps) {
   const { username, slug } = await params;
   const result = await getPublishedPostByUsernameAndSlug(username, slug);
@@ -39,36 +37,36 @@ export default async function PublicPostPage({ params }: PageProps) {
     : null;
 
   return (
-    <div className="mx-auto min-h-screen max-w-2xl px-4 py-12">
-      <nav className="mb-8 text-sm text-zinc-500">
-        <Link href={`/${author.username}`} className="hover:underline">
+    <PageShell wide>
+      <nav className="mb-8">
+        <Link href={`/${author.username}`} className="link text-sm">
           ← @{author.username}
         </Link>
       </nav>
 
-      <article>
-        <header className="mb-8 border-b border-zinc-200 pb-8 dark:border-zinc-800">
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+      <article className="card p-6 sm:p-8">
+        <header className="mb-8 border-b border-[var(--border-subtle)] pb-8">
+          <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
             {post.title}
           </h1>
           {post.excerpt ? (
-            <p className="mt-3 text-lg text-zinc-600 dark:text-zinc-400">
+            <p className="mt-4 text-lg leading-relaxed text-secondary">
               {post.excerpt}
             </p>
           ) : null}
           {publishedLabel ? (
-            <p className="mt-4 text-sm text-zinc-500">{publishedLabel}</p>
+            <p className="mt-4 text-sm text-muted">{publishedLabel}</p>
           ) : null}
         </header>
 
         <MarkdownContent content={post.content} />
       </article>
 
-      <footer className="mt-16 border-t border-zinc-200 pt-8 text-center text-sm text-zinc-500 dark:border-zinc-800">
-        <Link href={`/${author.username}`} className="hover:underline">
+      <footer className="mt-12 text-center text-sm text-muted">
+        <Link href={`/${author.username}`} className="link">
           More from {author.name ?? author.username}
         </Link>
       </footer>
-    </div>
+    </PageShell>
   );
 }

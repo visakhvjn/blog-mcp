@@ -2,7 +2,6 @@ import { signIn } from "@/auth";
 
 /**
  * Server-rendered button that starts Google OAuth sign-in.
- * Inputs: optional callback URL after auth. Output: form with submit button.
  */
 export function GoogleSignInButton({
   callbackUrl = "/dashboard",
@@ -16,10 +15,7 @@ export function GoogleSignInButton({
         await signIn("google", { redirectTo: callbackUrl });
       }}
     >
-      <button
-        type="submit"
-        className="flex w-full items-center justify-center gap-3 rounded-lg bg-zinc-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-      >
+      <button type="submit" className="btn-primary w-full">
         <GoogleIcon />
         Sign in with Google
       </button>

@@ -17,7 +17,6 @@ type PostFormProps = {
 
 /**
  * Markdown post create/edit form using server actions.
- * Inputs: mode and optional existing post. Output: form UI.
  */
 export function PostForm({ mode, post }: PostFormProps) {
   const action =
@@ -28,12 +27,9 @@ export function PostForm({ mode, post }: PostFormProps) {
   const [state, formAction, pending] = useActionState(action, initialState);
 
   return (
-    <form action={formAction} className="flex max-w-2xl flex-col gap-5">
+    <form action={formAction} className="card flex max-w-2xl flex-col gap-5 p-6">
       <div>
-        <label
-          htmlFor="title"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
+        <label htmlFor="title" className="label">
           Title
         </label>
         <input
@@ -42,16 +38,13 @@ export function PostForm({ mode, post }: PostFormProps) {
           type="text"
           required
           defaultValue={post?.title ?? ""}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+          className="input"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="slug"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
-          Slug <span className="font-normal text-zinc-500">(optional)</span>
+        <label htmlFor="slug" className="label">
+          Slug <span className="font-normal text-muted">(optional)</span>
         </label>
         <input
           id="slug"
@@ -59,32 +52,26 @@ export function PostForm({ mode, post }: PostFormProps) {
           type="text"
           placeholder="auto-from-title"
           defaultValue={post?.slug ?? ""}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm text-zinc-900 outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+          className="input font-mono text-sm"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="excerpt"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
-          Excerpt <span className="font-normal text-zinc-500">(optional)</span>
+        <label htmlFor="excerpt" className="label">
+          Excerpt <span className="font-normal text-muted">(optional)</span>
         </label>
         <input
           id="excerpt"
           name="excerpt"
           type="text"
           defaultValue={post?.excerpt ?? ""}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+          className="input"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="content"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
-          Content <span className="font-normal text-zinc-500">(Markdown)</span>
+        <label htmlFor="content" className="label">
+          Content <span className="font-normal text-muted">(Markdown)</span>
         </label>
         <textarea
           id="content"
@@ -92,22 +79,19 @@ export function PostForm({ mode, post }: PostFormProps) {
           required
           rows={14}
           defaultValue={post?.content ?? ""}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm text-zinc-900 outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+          className="input min-h-[280px] resize-y font-mono text-sm leading-relaxed"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="status"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
+        <label htmlFor="status" className="label">
           Status
         </label>
         <select
           id="status"
           name="status"
           defaultValue={post?.status ?? PostStatus.DRAFT}
-          className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+          className="input"
         >
           <option value={PostStatus.DRAFT}>Draft</option>
           <option value={PostStatus.PUBLISHED}>Published</option>
@@ -115,24 +99,18 @@ export function PostForm({ mode, post }: PostFormProps) {
       </div>
 
       {state.error ? (
-        <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+        <p className="text-sm text-[var(--danger)]" role="alert">
           {state.error}
         </p>
       ) : null}
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-        >
-          {pending
-            ? "Saving…"
-            : mode === "create"
-              ? "Create post"
-              : "Save changes"}
-        </button>
-      </div>
+      <button type="submit" disabled={pending} className="btn-primary w-fit">
+        {pending
+          ? "Saving…"
+          : mode === "create"
+            ? "Create post"
+            : "Save changes"}
+      </button>
     </form>
   );
 }

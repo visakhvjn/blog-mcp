@@ -1,30 +1,41 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const links = [
+  { href: "/dashboard", label: "Overview", exact: true },
+  { href: "/dashboard/posts", label: "Posts", exact: false },
+  { href: "/dashboard/settings", label: "MCP", exact: false },
+];
 
 /**
- * Secondary navigation for authenticated dashboard sections.
- * Inputs: none. Output: nav links.
+ * Pill-style dashboard navigation with active state.
  */
 export function DashboardNav() {
+  const pathname = usePathname();
+
   return (
-    <nav className="mb-8 flex gap-4 border-b border-zinc-200 pb-4 text-sm dark:border-zinc-800">
-      <Link
-        href="/dashboard"
-        className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        Overview
-      </Link>
-      <Link
-        href="/dashboard/posts"
-        className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        Posts
-      </Link>
-      <Link
-        href="/dashboard/settings"
-        className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        MCP
-      </Link>
+    <nav className="mb-8 flex flex-wrap gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-1.5">
+      {links.map(({ href, label, exact }) => {
+        const active = exact
+          ? pathname === href
+          : pathname === href || pathname.startsWith(`${href}/`);
+
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={
+              active
+                ? "rounded-lg bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] shadow-sm"
+                : "rounded-lg px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:text-[var(--text)]"
+            }
+          >
+            {label}
+          </Link>
+        );
+      })}
     </nav>
   );
 }

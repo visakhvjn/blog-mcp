@@ -1,0 +1,336 @@
+import { HomeCta } from "@/components/marketing/home-cta";
+import { SiteHeader } from "@/components/marketing/site-header";
+import Link from "next/link";
+import type { Session } from "next-auth";
+
+type LandingPageProps = {
+  session: Session | null;
+};
+
+const features = [
+  {
+    title: "Write with AI",
+    description:
+      "Connect Cursor or any MCP client. Draft, edit, and publish posts without leaving your editor.",
+    icon: "✦",
+  },
+  {
+    title: "Your public portfolio",
+    description:
+      "Every user gets a clean public blog at /username — shareable posts and a profile you're proud of.",
+    icon: "◎",
+  },
+  {
+    title: "Full control",
+    description:
+      "Markdown posts, drafts vs published, and a dashboard when you want to manage things by hand.",
+    icon: "◈",
+  },
+];
+
+const steps = [
+  {
+    step: "01",
+    title: "Sign in & claim your name",
+    description: "Google login in seconds. Pick a username that becomes your public URL.",
+  },
+  {
+    step: "02",
+    title: "Connect your AI tools",
+    description:
+      "Generate an API key and add Blog MCP to Cursor. Your assistant becomes your co-author.",
+  },
+  {
+    step: "03",
+    title: "Publish your presence",
+    description:
+      "Ship posts as drafts or go live instantly. Build an online presence that grows with you.",
+  },
+];
+
+const hobbyFeatures = [
+  "Personal blog at /your-username",
+  "MCP tools for Cursor & AI clients",
+  "Up to 25 published posts",
+  "Markdown editor in dashboard",
+  "Google sign-in",
+];
+
+const premiumFeatures = [
+  "Everything in Hobby",
+  "Unlimited published posts",
+  "Custom domain (coming soon)",
+  "Post analytics (coming soon)",
+  "Priority email support",
+  "Early access to new MCP tools",
+];
+
+/**
+ * Full marketing home page: hero, features, how-it-works, pricing.
+ */
+export function LandingPage({ session }: LandingPageProps) {
+  const isAuthenticated = Boolean(session?.user);
+  const dashboardHref = session?.user?.username
+    ? "/dashboard"
+    : "/onboarding";
+
+  return (
+    <div className="hero-glow min-h-screen">
+      <SiteHeader
+        isAuthenticated={isAuthenticated}
+        dashboardHref={dashboardHref}
+      />
+
+      {/* Hero */}
+      <section className="section-pad pt-16 sm:pt-24">
+        <div className="marketing-container">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface)] px-4 py-1.5 text-sm text-secondary shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+              Build your online presence using AI
+            </p>
+            <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-[var(--text)] sm:text-6xl">
+              Your blog.
+              <br />
+              <span className="text-[var(--accent)]">Powered by your assistant.</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-secondary">
+              Blog MCP turns Cursor and other AI tools into your publishing
+              engine — so you can grow a real portfolio, not just a pile of
+              drafts.
+            </p>
+            <div className="mt-10">
+              <HomeCta
+                isAuthenticated={isAuthenticated}
+                dashboardHref={dashboardHref}
+                large
+              />
+            </div>
+            <p className="mt-4 text-sm text-muted">
+              Free to start · No credit card · Setup in under 2 minutes
+            </p>
+          </div>
+
+          {/* Hero visual */}
+          <div className="mx-auto mt-16 max-w-4xl">
+            <div className="card overflow-hidden p-2 shadow-md sm:p-3">
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="rounded-lg bg-[var(--surface-muted)] p-5">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted">
+                    In Cursor
+                  </p>
+                  <p className="mt-3 font-mono text-sm text-[var(--text)]">
+                    create_post → &quot;Why I build in public&quot;
+                  </p>
+                  <p className="mt-2 font-mono text-xs text-muted">
+                    status: PUBLISHED
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface)] p-5">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted">
+                    Live on the web
+                  </p>
+                  <p className="mt-3 text-lg font-medium text-[var(--text)]">
+                    Why I build in public
+                  </p>
+                  <p className="mt-2 text-sm text-secondary">
+                    /your-username/why-i-build-in-public
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="section-pad bg-[var(--surface-muted)]">
+        <div className="marketing-container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--text)] sm:text-4xl">
+              Everything you need to show up online
+            </h2>
+            <p className="mt-4 text-secondary">
+              One platform for AI-native writing and a portfolio you actually
+              maintain.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-6 sm:grid-cols-3">
+            {features.map((f) => (
+              <div key={f.title} className="card p-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-lg text-[var(--accent)]">
+                  {f.icon}
+                </span>
+                <h3 className="mt-4 text-lg font-medium text-[var(--text)]">
+                  {f.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  {f.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="section-pad">
+        <div className="marketing-container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--text)] sm:text-4xl">
+              From idea to live post in minutes
+            </h2>
+            <p className="mt-4 text-secondary">
+              A simple flow designed for builders who already live in their IDE.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-8 sm:grid-cols-3">
+            {steps.map((s) => (
+              <div key={s.step} className="relative">
+                <span className="font-mono text-4xl font-semibold text-[var(--accent-soft)]">
+                  {s.step}
+                </span>
+                <h3 className="mt-4 text-lg font-medium text-[var(--text)]">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-secondary">
+                  {s.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="section-pad bg-[var(--surface-muted)]">
+        <div className="marketing-container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--text)] sm:text-4xl">
+              Simple, honest pricing
+            </h2>
+            <p className="mt-4 text-secondary">
+              Start free on Hobby. Upgrade when you&apos;re ready to grow.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-14 grid max-w-4xl gap-6 sm:grid-cols-2">
+            {/* Hobby */}
+            <div className="pricing-card flex flex-col">
+              <p className="text-sm font-medium text-[var(--accent)]">Hobby</p>
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-4xl font-semibold text-[var(--text)]">
+                  $0
+                </span>
+                <span className="text-secondary">/month</span>
+              </div>
+              <p className="mt-2 text-sm text-secondary">
+                Perfect for side projects and learning the workflow.
+              </p>
+              <ul className="mt-8 flex-1 space-y-3">
+                {hobbyFeatures.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-2 text-sm text-secondary"
+                  >
+                    <span className="text-[var(--accent)]">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <HomeCta
+                  isAuthenticated={isAuthenticated}
+                  dashboardHref={dashboardHref}
+                />
+              </div>
+            </div>
+
+            {/* Premium */}
+            <div className="pricing-card pricing-card-featured flex flex-col">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-0.5 text-xs font-medium text-[var(--accent-foreground)]">
+                Most popular
+              </span>
+              <p className="text-sm font-medium text-[var(--accent)]">Premium</p>
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-4xl font-semibold text-[var(--text)]">
+                  $12
+                </span>
+                <span className="text-secondary">/month</span>
+              </div>
+              <p className="mt-2 text-sm text-secondary">
+                For creators serious about their online presence.
+              </p>
+              <ul className="mt-8 flex-1 space-y-3">
+                {premiumFeatures.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-2 text-sm text-secondary"
+                  >
+                    <span className="text-[var(--accent)]">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <button
+                  type="button"
+                  disabled
+                  className="btn-secondary w-full cursor-not-allowed opacity-70"
+                  title="Billing coming soon"
+                >
+                  Coming soon
+                </button>
+                <p className="mt-2 text-center text-xs text-muted">
+                  Use Hobby for now — we&apos;ll notify you at launch
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="section-pad">
+        <div className="marketing-container">
+          <div className="card mx-auto max-w-3xl px-8 py-12 text-center sm:px-12">
+            <h2 className="text-2xl font-semibold text-[var(--text)] sm:text-3xl">
+              Ready to build your presence with AI?
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-secondary">
+              Join Blog MCP and publish your first post today — from Cursor or
+              the dashboard.
+            </p>
+            <div className="mt-8 flex justify-center">
+              <HomeCta
+                isAuthenticated={isAuthenticated}
+                dashboardHref={dashboardHref}
+                large
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-[var(--border-subtle)] bg-[var(--surface)] py-10">
+        <div className="marketing-container flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <p className="text-sm text-muted">
+            © {new Date().getFullYear()} Blog MCP
+          </p>
+          <div className="flex gap-6 text-sm text-secondary">
+            <a href="#features" className="hover:text-[var(--text)]">
+              Features
+            </a>
+            <a href="#pricing" className="hover:text-[var(--text)]">
+              Pricing
+            </a>
+            <Link href="/login" className="hover:text-[var(--text)]">
+              Sign in
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

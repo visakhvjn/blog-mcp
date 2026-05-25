@@ -1,7 +1,8 @@
 import { listPostsByUser } from "@/services/post-service";
 import { requireUser } from "@/lib/require-user";
 import { DashboardNav } from "@/components/dashboard-nav";
-import { SignOutButton } from "@/components/sign-out-button";
+import { DashboardHeader } from "@/components/dashboard-header";
+import { PageShell } from "@/components/page-shell";
 import { DeletePostButton } from "@/components/delete-post-button";
 import Link from "next/link";
 import { PostStatus } from "@prisma/client";
@@ -10,83 +11,68 @@ export const metadata = {
   title: "Posts — Blog MCP",
 };
 
-/**
- * Lists all posts for the signed-in user with links to edit or create.
- */
 export default async function PostsPage() {
   const user = await requireUser();
   const posts = await listPostsByUser(user.id);
 
   return (
-    <div className="mx-auto min-h-screen max-w-3xl px-4 py-12">
-      <header className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Posts
-          </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+    <PageShell wide>
+      <DashboardHeader
+        title="Posts"
+        subtitle={
+          <>
             @{user.username} ·{" "}
             <Link
               href={`/${user.username}`}
-              className="underline"
+              className="link"
               target="_blank"
               rel="noopener noreferrer"
             >
               View public blog
             </Link>
-          </p>
-        </div>
-        <SignOutButton />
-      </header>
-
+          </>
+        }
+      />
       <DashboardNav />
 
       <div className="mb-6 flex justify-end">
-        <Link
-          href="/dashboard/posts/new"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-        >
+        <Link href="/dashboard/posts/new" className="btn-primary">
           New post
         </Link>
       </div>
 
       {posts.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-zinc-300 p-8 text-center text-sm text-zinc-500 dark:border-zinc-700">
-          No posts yet.{" "}
-          <Link
-            href="/dashboard/posts/new"
-            className="font-medium text-zinc-900 underline dark:text-zinc-200"
-          >
+        <div className="card-muted border-dashed p-10 text-center">
+          <p className="text-sm text-secondary">No posts yet.</p>
+          <Link href="/dashboard/posts/new" className="link mt-2 inline-block text-sm">
             Create your first post
           </Link>
-        </p>
+        </div>
       ) : (
-        <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+        <ul className="card divide-y divide-[var(--border-subtle)] overflow-hidden">
           {posts.map((post) => (
             <li
               key={post.id}
-              className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 p-5 transition hover:bg-[var(--bg-elevated)] sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/dashboard/posts/${post.id}/edit`}
-                  className="font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                  className="font-medium text-[var(--text)] hover:text-[var(--accent)]"
                 >
                   {post.title}
                 </Link>
-                <p className="mt-1 font-mono text-xs text-zinc-500">
-                  /{post.slug}
-                </p>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 font-mono text-xs text-muted">/{post.slug}</p>
+                <p className="mt-1 text-xs text-muted">
                   Updated {post.updatedAt.toLocaleDateString()}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 flex-wrap items-center gap-3">
                 <span
                   className={
                     post.status === PostStatus.PUBLISHED
-                      ? "rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300"
-                      : "rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                      ? "badge-published"
+                      : "badge-draft"
                   }
                 >
                   {post.status === PostStatus.PUBLISHED ? "Published" : "Draft"}
@@ -94,7 +80,7 @@ export default async function PostsPage() {
                 {post.status === PostStatus.PUBLISHED ? (
                   <Link
                     href={`/${user.username}/${post.slug}`}
-                    className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+                    className="text-sm font-medium text-[var(--accent)] hover:underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -103,7 +89,7 @@ export default async function PostsPage() {
                 ) : null}
                 <Link
                   href={`/dashboard/posts/${post.id}/edit`}
-                  className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+                  className="text-sm font-medium text-secondary hover:text-[var(--text)]"
                 >
                   Edit
                 </Link>
@@ -113,6 +99,6 @@ export default async function PostsPage() {
           ))}
         </ul>
       )}
-    </div>
+    </PageShell>
   );
 }

@@ -20,14 +20,12 @@ export function CreateApiKeyForm() {
 
   if (state.fullKey) {
     return (
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
-        <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+      <div className="alert-warning">
+        <p className="alert-warning-title">
           Copy your API key now — it will not be shown again.
         </p>
-        <p className="mt-1 text-xs text-amber-800/80 dark:text-amber-300/80">
-          Key: {state.name}
-        </p>
-        <code className="mt-3 block break-all rounded-lg bg-white/80 p-3 font-mono text-xs text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+        <p className="mt-1 text-xs text-secondary">Key: {state.name}</p>
+        <code className="mt-3 block break-all rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] p-3 font-mono text-xs text-[var(--text)]">
           {state.fullKey}
         </code>
         <button
@@ -37,7 +35,7 @@ export function CreateApiKeyForm() {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }}
-          className="mt-3 rounded-lg bg-zinc-900 px-3 py-1.5 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900"
+          className="btn-primary mt-3"
         >
           {copied ? "Copied" : "Copy key"}
         </button>
@@ -46,12 +44,12 @@ export function CreateApiKeyForm() {
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+    <form
+      action={formAction}
+      className="flex flex-col gap-3 sm:flex-row sm:items-end"
+    >
       <div className="flex-1">
-        <label
-          htmlFor="key-name"
-          className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-        >
+        <label htmlFor="key-name" className="label">
           Key name
         </label>
         <input
@@ -60,18 +58,16 @@ export function CreateApiKeyForm() {
           type="text"
           required
           placeholder="e.g. Cursor laptop"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900"
+          className="input"
         />
       </div>
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-      >
+      <button type="submit" disabled={pending} className="btn-primary">
         {pending ? "Creating…" : "Generate API key"}
       </button>
       {state.error ? (
-        <p className="text-sm text-red-600 sm:basis-full">{state.error}</p>
+        <p className="text-sm text-[var(--danger)] sm:basis-full">
+          {state.error}
+        </p>
       ) : null}
     </form>
   );

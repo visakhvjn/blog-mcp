@@ -15,14 +15,18 @@ export function RevokeApiKeyButton({ keyId, keyName }: RevokeApiKeyButtonProps) 
     <form
       action={revokeApiKeyAction.bind(null, keyId)}
       onSubmit={(e) => {
-        if (!confirm(`Revoke API key "${keyName}"? MCP clients using it will stop working.`)) {
+        if (
+          !confirm(
+            `Revoke API key "${keyName}"? MCP clients using it will stop working.`,
+          )
+        ) {
           e.preventDefault();
         }
       }}
     >
       <button
         type="submit"
-        className="text-sm text-red-600 hover:underline dark:text-red-400"
+        className="text-sm font-medium text-[var(--danger)] hover:underline"
       >
         Revoke
       </button>
