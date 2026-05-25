@@ -26,6 +26,7 @@ export const createPostSchema = z.object({
     .max(80)
     .optional(),
   status: postStatusSchema.default(PostStatus.DRAFT),
+  topicId: z.string().optional(),
 });
 
 export const updatePostSchema = z.object({
@@ -40,6 +41,7 @@ export const updatePostSchema = z.object({
     .max(80)
     .optional(),
   status: postStatusSchema.optional(),
+  topicId: z.string().nullable().optional(),
 });
 
 export type CreatePostInput = z.infer<typeof createPostSchema>;

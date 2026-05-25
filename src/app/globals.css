@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #ddd8cf;
-  --bg-elevated: #e8e3da;
-  --surface: #f0ebe3;
-  --surface-muted: #d5cfc4;
-  --border: #b8b0a3;
-  --border-subtle: #c9c1b4;
+  --bg: #ffffff;
+  --bg-elevated: #fafafa;
+  --surface: #ffffff;
+  --surface-muted: #f5f5f4;
+  --border: #e7e5e4;
+  --border-subtle: #f0eeec;
   --text: #1c1916;
-  --text-secondary: #454039;
-  --text-muted: #6a6358;
+  --text-secondary: #44403c;
+  --text-muted: #78716c;
   --accent: #4a6b5c;
   --accent-hover: #3a5749;
-  --accent-soft: #b8ccc0;
+  --accent-soft: #e8f0ec;
   --accent-foreground: #f2f7f4;
   --danger: #a84840;
-  --danger-soft: #edd5d2;
-  --warning-soft: #e8dcc4;
-  --shadow-sm: 0 1px 3px rgb(28 25 22 / 0.08);
-  --shadow-md: 0 6px 24px rgb(28 25 22 / 0.12);
+  --danger-soft: #fef2f2;
+  --warning-soft: #fffbeb;
+  --shadow-sm: 0 1px 3px rgb(28 25 22 / 0.06);
+  --shadow-md: 0 6px 24px rgb(28 25 22 / 0.08);
   --radius: 0.75rem;
 }
 
@@ -36,13 +36,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Soft page backdrop with subtle depth */
 .page-bg {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(74 107 92 / 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgb(90 110 95 / 0.1), transparent),
-    var(--bg);
+  background: var(--bg);
 }
 
 .page-shell {
@@ -63,14 +59,14 @@ body {
 
 .card {
   border-radius: var(--radius);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
 }
 
 .card-muted {
   border-radius: var(--radius);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   background: var(--surface-muted);
 }
 
@@ -261,7 +257,7 @@ body {
 
 .pricing-card {
   border-radius: 1rem;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   background: var(--surface);
   padding: 2rem;
   box-shadow: var(--shadow-sm);
@@ -275,7 +271,6 @@ body {
 
 .hero-glow {
   background:
-    radial-gradient(ellipse 70% 60% at 50% -10%, rgb(74 107 92 / 0.18), transparent),
-    radial-gradient(ellipse 50% 40% at 90% 20%, rgb(90 110 95 / 0.14), transparent),
+    radial-gradient(ellipse 70% 60% at 50% -10%, rgb(74 107 92 / 0.06), transparent),
     var(--bg);
 }

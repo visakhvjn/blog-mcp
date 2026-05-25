@@ -44,8 +44,8 @@ export default async function PublicPostPage({ params }: PageProps) {
         </Link>
       </nav>
 
-      <article className="card p-6 sm:p-8">
-        <header className="mb-8 border-b border-[var(--border-subtle)] pb-8">
+      <article>
+        <header className="mb-10 border-b border-[var(--border)] pb-8">
           <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
             {post.title}
           </h1>

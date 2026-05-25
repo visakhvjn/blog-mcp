@@ -1,23 +1,23 @@
 "use client";
 
-import { revokeApiKeyAction } from "@/actions/api-keys";
+import { deleteApiKeyAction } from "@/actions/api-keys";
 
-type RevokeApiKeyButtonProps = {
+type DeleteApiKeyButtonProps = {
   keyId: string;
   keyName: string;
 };
 
 /**
- * Revokes an API key after confirmation.
+ * Deletes an API key after confirmation.
  */
-export function RevokeApiKeyButton({ keyId, keyName }: RevokeApiKeyButtonProps) {
+export function DeleteApiKeyButton({ keyId, keyName }: DeleteApiKeyButtonProps) {
   return (
     <form
-      action={revokeApiKeyAction.bind(null, keyId)}
+      action={deleteApiKeyAction.bind(null, keyId)}
       onSubmit={(e) => {
         if (
           !confirm(
-            `Revoke API key "${keyName}"? MCP clients using it will stop working.`,
+            `Delete API key "${keyName}"? MCP clients using it will stop working.`,
           )
         ) {
           e.preventDefault();
@@ -28,7 +28,7 @@ export function RevokeApiKeyButton({ keyId, keyName }: RevokeApiKeyButtonProps) 
         type="submit"
         className="text-sm font-medium text-[var(--danger)] hover:underline"
       >
-        Revoke
+        Delete
       </button>
     </form>
   );

@@ -16,8 +16,8 @@ export type ApiKeyListItem = {
 export async function listApiKeysForUser(
   userId: string,
 ): Promise<ApiKeyListItem[]> {
-  return prisma.apiKey.findMany({
-    where: { userId, revokedAt: null },
+  const keys = await prisma.apiKey.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -25,8 +25,13 @@ export async function listApiKeysForUser(
       keyPrefix: true,
       lastUsedAt: true,
       createdAt: true,
+      revokedAt: true,
     },
   });
+
+  return keys
+    .filter((key) => !key.revokedAt)
+    .map(({ revokedAt: _revokedAt, ...key }) => key);
 }
 
 /**
@@ -65,9 +70,9 @@ export async function revokeApiKeyForUser(
   userId: string,
 ): Promise<boolean> {
   const existing = await prisma.apiKey.findFirst({
-    where: { id: keyId, userId, revokedAt: null },
+    where: { id: keyId, userId },
   });
-  if (!existing) {
+  if (!existing || existing.revokedAt) {
     return false;
   }
   await prisma.apiKey.update({
@@ -75,4 +80,18 @@ export async function revokeApiKeyForUser(
     data: { revokedAt: new Date() },
   });
   return true;
+}
+
+/**
+ * Permanently deletes an API key owned by the user.
+ * Inputs: keyId, userId. Output: true if deleted, false if not found.
+ */
+export async function deleteApiKeyForUser(
+  keyId: string,
+  userId: string,
+): Promise<boolean> {
+  const result = await prisma.apiKey.deleteMany({
+    where: { id: keyId, userId },
+  });
+  return result.count > 0;
 }

@@ -14,10 +14,29 @@ model User {
   name      String?
   image     String?
   username  String?  @unique
+  /// Short bio shown on the public profile.
+  summary   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
+  topics    Topic[]
   apiKeys   ApiKey[]
+}
+
+/// Optional grouping for posts (e.g. series, category).
+model Topic {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  slug        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+
+  @@unique([userId, slug])
+  @@index([userId])
 }
 
 /// MCP / API access token (hashed). Plain key shown once at creation.
@@ -39,6 +58,8 @@ model Post {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   userId      String     @db.ObjectId
   user        User       @relation(fields: [userId], references: [id])
+  topicId     String?    @db.ObjectId
+  topic       Topic?     @relation(fields: [topicId], references: [id], onDelete: SetNull)
   title       String
   slug        String
   content     String
@@ -50,6 +71,7 @@ model Post {
 
   @@unique([userId, slug])
   @@index([userId, status])
+  @@index([userId, topicId])
 }
 
 enum PostStatus {

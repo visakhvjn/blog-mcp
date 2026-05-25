@@ -7,6 +7,13 @@ export type PublicAuthor = {
   username: string;
   name: string | null;
   image: string | null;
+  summary: string | null;
+  createdAt: Date;
+};
+
+export type PublicAuthorStats = {
+  topicCount: number;
+  postCount: number;
 };
 
 export type PublicPostSummary = {
@@ -16,6 +23,14 @@ export type PublicPostSummary = {
   excerpt: string | null;
   publishedAt: Date | null;
   createdAt: Date;
+};
+
+export type PublicTopicWithPosts = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  posts: PublicPostSummary[];
 };
 
 /**
@@ -36,6 +51,8 @@ export async function getPublicAuthorByUsername(
       username: true,
       name: true,
       image: true,
+      summary: true,
+      createdAt: true,
     },
   });
 
@@ -44,6 +61,29 @@ export async function getPublicAuthorByUsername(
   }
 
   return user as PublicAuthor;
+}
+
+/**
+ * Counts public-facing topics and published posts for a profile.
+ * Topics are those with at least one published post.
+ * Inputs: userId. Output: topic and post counts.
+ */
+export async function getPublicAuthorStats(
+  userId: string,
+): Promise<PublicAuthorStats> {
+  const [topicCount, postCount] = await Promise.all([
+    prisma.topic.count({
+      where: {
+        userId,
+        posts: { some: { status: PostStatus.PUBLISHED } },
+      },
+    }),
+    prisma.post.count({
+      where: { userId, status: PostStatus.PUBLISHED },
+    }),
+  ]);
+
+  return { topicCount, postCount };
 }
 
 /**
@@ -93,4 +133,98 @@ export async function getPublishedPostByUsernameAndSlug(
   }
 
   return { author, post };
+}
+
+/**
+ * Lists topics that have at least one published post, with those posts.
+ * Inputs: userId. Output: topics with nested published summaries.
+ */
+export async function listPublicTopicsWithPosts(
+  userId: string,
+): Promise<PublicTopicWithPosts[]> {
+  const topics = await prisma.topic.findMany({
+    where: {
+      userId,
+      posts: { some: { status: PostStatus.PUBLISHED } },
+    },
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      posts: {
+        where: { status: PostStatus.PUBLISHED },
+        orderBy: { publishedAt: "desc" },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          publishedAt: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+
+  return topics;
+}
+
+/**
+ * Lists published posts with no topic.
+ * Inputs: userId. Output: published summaries.
+ */
+export async function listPublishedPostsWithoutTopic(
+  userId: string,
+): Promise<PublicPostSummary[]> {
+  return prisma.post.findMany({
+    where: { userId, status: PostStatus.PUBLISHED, topicId: null },
+    orderBy: { publishedAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      publishedAt: true,
+      createdAt: true,
+    },
+  });
+}
+
+/**
+ * Fetches a topic and its published posts for a public author.
+ * Inputs: userId, topic slug. Output: topic with posts or null.
+ */
+export async function getPublicTopicByUsernameAndSlug(
+  userId: string,
+  topicSlug: string,
+) {
+  const topic = await prisma.topic.findFirst({
+    where: { userId, slug: topicSlug },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      posts: {
+        where: { status: PostStatus.PUBLISHED },
+        orderBy: { publishedAt: "desc" },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          publishedAt: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+
+  if (!topic || topic.posts.length === 0) {
+    return null;
+  }
+
+  return topic;
 }

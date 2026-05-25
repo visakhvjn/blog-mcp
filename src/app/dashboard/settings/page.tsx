@@ -1,5 +1,5 @@
 import { CreateApiKeyForm } from "@/components/create-api-key-form";
-import { RevokeApiKeyButton } from "@/components/revoke-api-key-button";
+import { DeleteApiKeyButton } from "@/components/delete-api-key-button";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PageShell } from "@/components/page-shell";
@@ -27,7 +27,7 @@ export default async function SettingsPage() {
 }`;
 
   return (
-    <PageShell>
+    <PageShell wide>
       <DashboardHeader
         title="MCP settings"
         subtitle="Connect Cursor or any MCP client with an API key"
@@ -36,34 +36,45 @@ export default async function SettingsPage() {
 
       <section className="mb-10 space-y-4">
         <h2 className="text-lg font-medium text-[var(--text)]">API keys</h2>
-        <CreateApiKeyForm />
 
-        {keys.length > 0 ? (
-          <ul className="card divide-y divide-[var(--border-subtle)] overflow-hidden">
-            {keys.map((key) => (
-              <li
-                key={key.id}
-                className="flex items-center justify-between gap-4 p-4"
-              >
-                <div>
-                  <p className="font-medium text-[var(--text)]">{key.name}</p>
-                  <p className="font-mono text-xs text-muted">
-                    {key.keyPrefix}…
-                  </p>
-                  <p className="mt-1 text-xs text-muted">
-                    Created {key.createdAt.toLocaleDateString()}
-                    {key.lastUsedAt
-                      ? ` · Last used ${key.lastUsedAt.toLocaleDateString()}`
-                      : ""}
-                  </p>
-                </div>
-                <RevokeApiKeyButton keyId={key.id} keyName={key.name} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-muted">No API keys yet.</p>
-        )}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-secondary">
+            Keys created so far
+          </h3>
+          {keys.length > 0 ? (
+            <ul className="card divide-y divide-[var(--border-subtle)] overflow-hidden">
+              {keys.map((key) => (
+                <li
+                  key={key.id}
+                  className="flex items-center justify-between gap-4 p-4"
+                >
+                  <div>
+                    <p className="font-medium text-[var(--text)]">{key.name}</p>
+                    <p className="font-mono text-xs text-muted">
+                      {key.keyPrefix}…
+                    </p>
+                    <p className="mt-1 text-xs text-muted">
+                      Created {key.createdAt.toLocaleDateString()}
+                      {key.lastUsedAt
+                        ? ` · Last used ${key.lastUsedAt.toLocaleDateString()}`
+                        : " · Never used"}
+                    </p>
+                  </div>
+                  <DeleteApiKeyButton keyId={key.id} keyName={key.name} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted">No API keys yet.</p>
+          )}
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <h3 className="text-sm font-medium text-secondary">
+            Create a new key
+          </h3>
+          <CreateApiKeyForm />
+        </div>
       </section>
 
       <section className="card space-y-4 p-6">

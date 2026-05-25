@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { ensureUniqueSlug, slugifyTitle } from "@/lib/slug";
 import type { CreatePostInput, UpdatePostInput } from "@/lib/post-validation";
+import { resolveTopicIdForUser } from "@/services/topic-service";
 import { PostStatus, type Post } from "@prisma/client";
 
 export type PostSummary = {
@@ -9,6 +10,9 @@ export type PostSummary = {
   slug: string;
   status: PostStatus;
   excerpt: string | null;
+  topicId: string | null;
+  topicName: string | null;
+  topicSlug: string | null;
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -20,6 +24,7 @@ export type PostSummary = {
  */
 export type ListPostsOptions = {
   status?: PostStatus;
+  topicId?: string | null;
   limit?: number;
 };
 
@@ -35,6 +40,11 @@ export async function listPostsByUser(
     where: {
       userId,
       ...(options?.status ? { status: options.status } : {}),
+      ...(options?.topicId === null
+        ? { topicId: null }
+        : options?.topicId
+          ? { topicId: options.topicId }
+          : {}),
     },
     orderBy: { updatedAt: "desc" },
     take: options?.limit ?? 100,
@@ -44,12 +54,26 @@ export async function listPostsByUser(
       slug: true,
       status: true,
       excerpt: true,
+      topicId: true,
+      topic: { select: { name: true, slug: true } },
       publishedAt: true,
       createdAt: true,
       updatedAt: true,
     },
   });
-  return posts;
+  return posts.map((p) => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    status: p.status,
+    excerpt: p.excerpt,
+    topicId: p.topicId,
+    topicName: p.topic?.name ?? null,
+    topicSlug: p.topic?.slug ?? null,
+    publishedAt: p.publishedAt,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+  }));
 }
 
 /**
@@ -107,10 +131,12 @@ export async function createPost(
   const slug = await resolveSlug(userId, input.title, input.slug);
   const publishedAt =
     input.status === PostStatus.PUBLISHED ? new Date() : null;
+  const topicId = await resolveTopicIdForUser(userId, input.topicId);
 
   return prisma.post.create({
     data: {
       userId,
+      topicId,
       title: input.title,
       slug,
       content: input.content,
@@ -154,12 +180,18 @@ export async function updatePost(
     publishedAt = null;
   }
 
+  let topicId: string | null | undefined;
+  if (input.topicId !== undefined) {
+    topicId = await resolveTopicIdForUser(userId, input.topicId);
+  }
+
   return prisma.post.update({
     where: { id: postId },
     data: {
       ...(input.title !== undefined ? { title: input.title } : {}),
       ...(input.content !== undefined ? { content: input.content } : {}),
       ...(input.excerpt !== undefined ? { excerpt: input.excerpt } : {}),
+      ...(topicId !== undefined ? { topicId } : {}),
       slug,
       status: nextStatus,
       publishedAt,

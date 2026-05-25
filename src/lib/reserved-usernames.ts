@@ -5,7 +5,9 @@ const RESERVED = new Set([
   "dashboard",
   "api",
   "posts",
+  "topics",
   "settings",
+  "profile",
   "_next",
   "favicon.ico",
 ]);

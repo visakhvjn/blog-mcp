@@ -1,5 +1,10 @@
+import { PublicAuthorStatsRow } from "@/components/public-author-stats";
+import { PublicPostList } from "@/components/public-post-list";
+import { PublicTopicCards } from "@/components/public-topic-cards";
 import {
   getPublicAuthorByUsername,
+  getPublicAuthorStats,
+  listPublicTopicsWithPosts,
   listPublishedPostsForAuthor,
 } from "@/services/portfolio-service";
 import { PageShell } from "@/components/page-shell";
@@ -18,7 +23,8 @@ export async function generateMetadata({ params }: PageProps) {
   }
   return {
     title: `${author.name ?? author.username} — Blog`,
-    description: `Published posts by @${author.username}`,
+    description:
+      author.summary ?? `Published posts by @${author.username}`,
   };
 }
 
@@ -29,7 +35,13 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
     notFound();
   }
 
-  const posts = await listPublishedPostsForAuthor(author.id);
+  const [topics, allPosts, stats] = await Promise.all([
+    listPublicTopicsWithPosts(author.id),
+    listPublishedPostsForAuthor(author.id),
+    getPublicAuthorStats(author.id),
+  ]);
+
+  const hasTopics = topics.length > 0;
 
   return (
     <PageShell wide>
@@ -59,41 +71,37 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
             </p>
           </div>
         </div>
+        {author.summary ? (
+          <p className="mt-6 max-w-2xl whitespace-pre-wrap text-sm leading-relaxed text-secondary">
+            {author.summary}
+          </p>
+        ) : null}
+        <PublicAuthorStatsRow stats={stats} joinedAt={author.createdAt} />
       </header>
 
-      <section>
-        <h2 className="mb-5 text-sm font-medium uppercase tracking-wide text-muted">
-          Published posts
-        </h2>
-        {posts.length === 0 ? (
-          <p className="text-sm text-secondary">No published posts yet.</p>
-        ) : (
-          <ul className="space-y-4">
-            {posts.map((post) => (
-              <li key={post.id}>
-                <Link
-                  href={`/${author.username}/${post.slug}`}
-                  className="card block p-5 transition hover:shadow-md"
-                >
-                  <h3 className="text-xl font-medium text-[var(--text)]">
-                    {post.title}
-                  </h3>
-                  {post.excerpt ? (
-                    <p className="mt-2 text-sm leading-relaxed text-secondary">
-                      {post.excerpt}
-                    </p>
-                  ) : null}
-                  <p className="mt-3 text-xs text-muted">
-                    {post.publishedAt
-                      ? post.publishedAt.toLocaleDateString()
-                      : post.createdAt.toLocaleDateString()}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {allPosts.length === 0 && !hasTopics ? (
+        <p className="text-sm text-secondary">No published posts yet.</p>
+      ) : (
+        <div className="space-y-10">
+          {hasTopics ? (
+            <section>
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted">
+                Topics
+              </h2>
+              <PublicTopicCards username={author.username} topics={topics} />
+            </section>
+          ) : null}
+
+          {allPosts.length > 0 ? (
+            <section>
+              <h2 className="mb-5 text-sm font-bold uppercase tracking-wide text-muted">
+                Posts
+              </h2>
+              <PublicPostList username={author.username} posts={allPosts} />
+            </section>
+          ) : null}
+        </div>
+      )}
 
       <footer className="mt-16 text-center text-sm text-muted">
         <Link href="/" className="link">

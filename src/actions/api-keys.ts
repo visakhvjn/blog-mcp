@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import {
   createApiKeyForUser,
-  revokeApiKeyForUser,
+  deleteApiKeyForUser,
 } from "@/services/api-key-service";
 import { revalidatePath } from "next/cache";
 
@@ -43,14 +43,14 @@ export async function createApiKeyAction(
 }
 
 /**
- * Revokes an API key owned by the signed-in user.
+ * Deletes an API key owned by the signed-in user.
  * Inputs: keyId. Output: revalidates settings page.
  */
-export async function revokeApiKeyAction(keyId: string): Promise<void> {
+export async function deleteApiKeyAction(keyId: string): Promise<void> {
   const session = await auth();
   if (!session?.user?.id) {
     return;
   }
-  await revokeApiKeyForUser(keyId, session.user.id);
+  await deleteApiKeyForUser(keyId, session.user.id);
   revalidatePath("/dashboard/settings");
 }
