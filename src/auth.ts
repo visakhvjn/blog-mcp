@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
 import { prisma } from "@/lib/prisma";
+import { syncUserFromOAuth } from "@/services/user-service";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -15,21 +16,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       try {
-        await prisma.user.upsert({
-          where: { email: user.email },
-          create: {
-            email: user.email,
-            name: user.name ?? null,
-            image: user.image ?? null,
-          },
-          update: {
-            name: user.name ?? null,
-            image: user.image ?? null,
-          },
+        await syncUserFromOAuth({
+          email: user.email,
+          name: user.name ?? null,
+          image: user.image ?? null,
         });
       } catch (err) {
-        // Fails on Vercel if DATABASE_URL is missing or MongoDB blocks the connection.
-        console.error("[auth] signIn upsert failed:", err);
+        console.error("[auth] signIn sync failed:", err);
         return false;
       }
 

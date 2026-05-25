@@ -1,5 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import type { UpdateProfileInput } from "@/lib/user-validation";
+import type { User } from "@prisma/client";
+
+export type OAuthUserProfile = {
+  email: string;
+  name: string | null;
+  image: string | null;
+};
 
 export type UserProfile = {
   id: string;
@@ -8,6 +15,36 @@ export type UserProfile = {
   image: string | null;
   summary: string | null;
 };
+
+/**
+ * Creates or updates a user from Google OAuth without Prisma upsert (MongoDB M0 has no transactions).
+ * Inputs: email, name, image from the provider. Output: saved user row.
+ */
+export async function syncUserFromOAuth(
+  profile: OAuthUserProfile,
+): Promise<User> {
+  const existing = await prisma.user.findUnique({
+    where: { email: profile.email },
+  });
+
+  if (existing) {
+    return prisma.user.update({
+      where: { email: profile.email },
+      data: {
+        name: profile.name,
+        image: profile.image,
+      },
+    });
+  }
+
+  return prisma.user.create({
+    data: {
+      email: profile.email,
+      name: profile.name,
+      image: profile.image,
+    },
+  });
+}
 
 /**
  * Loads profile fields for the signed-in user.
