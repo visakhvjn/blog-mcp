@@ -17,6 +17,22 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
+  apiKeys   ApiKey[]
+}
+
+/// MCP / API access token (hashed). Plain key shown once at creation.
+model ApiKey {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String    @db.ObjectId
+  user       User      @relation(fields: [userId], references: [id])
+  name       String
+  keyLookup  String    @unique
+  keyPrefix  String
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+
+  @@index([userId])
 }
 
 model Post {

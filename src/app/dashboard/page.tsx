@@ -67,12 +67,23 @@ export default async function DashboardPage() {
               @{username}
             </dd>
           </div>
+          <div>
+            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+              Public blog
+            </dt>
+            <dd className="mt-1">
+              <Link
+                href={`/${username}`}
+                className="text-sm font-medium text-zinc-900 underline dark:text-zinc-100"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                /{username}
+              </Link>
+            </dd>
+          </div>
         </dl>
       </section>
-
-      <p className="mt-8 text-center text-sm text-zinc-500">
-        MCP authoring for Cursor arrives in a later phase.
-      </p>
     </div>
   );
 }

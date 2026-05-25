@@ -15,9 +15,15 @@ export function DashboardNav() {
       </Link>
       <Link
         href="/dashboard/posts"
-        className="font-medium text-zinc-900 dark:text-zinc-100"
+        className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
         Posts
+      </Link>
+      <Link
+        href="/dashboard/settings"
+        className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+      >
+        MCP
       </Link>
     </nav>
   );

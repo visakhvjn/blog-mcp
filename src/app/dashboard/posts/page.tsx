@@ -25,7 +25,15 @@ export default async function PostsPage() {
             Posts
           </h1>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            @{user.username}
+            @{user.username} ·{" "}
+            <Link
+              href={`/${user.username}`}
+              className="underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View public blog
+            </Link>
           </p>
         </div>
         <SignOutButton />
@@ -83,6 +91,16 @@ export default async function PostsPage() {
                 >
                   {post.status === PostStatus.PUBLISHED ? "Published" : "Draft"}
                 </span>
+                {post.status === PostStatus.PUBLISHED ? (
+                  <Link
+                    href={`/${user.username}/${post.slug}`}
+                    className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View
+                  </Link>
+                ) : null}
                 <Link
                   href={`/dashboard/posts/${post.id}/edit`}
                   className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"

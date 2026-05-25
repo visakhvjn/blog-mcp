@@ -18,10 +18,26 @@ export type PostSummary = {
  * Lists all posts for a user, newest first.
  * Inputs: userId. Output: array of post summaries.
  */
-export async function listPostsByUser(userId: string): Promise<PostSummary[]> {
+export type ListPostsOptions = {
+  status?: PostStatus;
+  limit?: number;
+};
+
+/**
+ * Lists posts for a user with optional status filter and limit.
+ * Inputs: userId, optional filter/limit. Output: post summaries.
+ */
+export async function listPostsByUser(
+  userId: string,
+  options?: ListPostsOptions,
+): Promise<PostSummary[]> {
   const posts = await prisma.post.findMany({
-    where: { userId },
+    where: {
+      userId,
+      ...(options?.status ? { status: options.status } : {}),
+    },
     orderBy: { updatedAt: "desc" },
+    take: options?.limit ?? 100,
     select: {
       id: true,
       title: true,
@@ -46,6 +62,19 @@ export async function getPostByIdForUser(
 ): Promise<Post | null> {
   return prisma.post.findFirst({
     where: { id: postId, userId },
+  });
+}
+
+/**
+ * Fetches one post by slug scoped to the owner.
+ * Inputs: slug, userId. Output: full post or null.
+ */
+export async function getPostBySlugForUser(
+  slug: string,
+  userId: string,
+): Promise<Post | null> {
+  return prisma.post.findFirst({
+    where: { slug, userId },
   });
 }
 

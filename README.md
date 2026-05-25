@@ -97,8 +97,42 @@ Example create body:
 | `npm run db:push` | Sync Prisma schema to MongoDB |
 | `npm run db:generate` | Regenerate Prisma client |
 
-## Roadmap
+## MCP (Cursor & other clients)
 
-- **Phase 2** — Post CRUD in dashboard
-- **Phase 3** — Public portfolio at `/{username}`
-- **Phase 4** — API keys + MCP endpoint for Cursor
+1. Sign in at [http://localhost:3000](http://localhost:3000)
+2. Open **Dashboard → MCP** (`/dashboard/settings`)
+3. **Generate API key** and copy it once
+4. In your shell:
+
+```bash
+export BLOG_MCP_API_KEY=blog_your_key_here
+```
+
+5. Use project [`.cursor/mcp.json`](.cursor/mcp.json) or paste the config from the settings page
+6. Restart Cursor (Settings → MCP → enable **blog-mcp**)
+
+**Endpoint:** `http://localhost:3000/api/mcp`  
+**Auth:** `Authorization: Bearer <api_key>`
+
+| Tool | Description |
+|------|-------------|
+| `list_posts` | List your posts (optional `status`, `limit`) |
+| `get_post` | Get by `id` or `slug` |
+| `create_post` | Create markdown post |
+| `update_post` | Update by `id` |
+| `delete_post` | Delete by `id` |
+
+## Public blog
+
+Only **Published** posts are visible (drafts stay private).
+
+| URL | Page |
+|-----|------|
+| `/{username}` | Author portfolio + post list |
+| `/{username}/{slug}` | Single published post |
+
+Example: `http://localhost:3000/your-username/my-post-slug`
+
+Set a post to **Published** in the dashboard editor to make it public.
+
+## Roadmap
