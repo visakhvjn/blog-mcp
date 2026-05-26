@@ -58,7 +58,7 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
               className="h-16 w-16 rounded-full border border-[var(--border)] object-cover"
             />
           ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent-soft)] text-xl font-medium text-[var(--accent-hover)]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent-soft)] text-xl font-medium text-[var(--accent)]">
               {(author.name?.[0] ?? author.username[0]).toUpperCase()}
             </div>
           )}

@@ -16,7 +16,7 @@ export function SiteHeader({
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/92 backdrop-blur-md">
       <div className="marketing-container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-semibold text-[var(--text)]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-sm text-[var(--accent-hover)]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-sm font-semibold text-[var(--accent)]">
             B
           </span>
           Blog MCP
@@ -34,17 +34,11 @@ export function SiteHeader({
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
-          {isAuthenticated ? (
-            <Link href={dashboardHref} className="btn-primary">
-              Dashboard
-            </Link>
-          ) : (
-            <Link href="/login" className="btn-primary">
-              Start free
-            </Link>
-          )}
-        </div>
+        {isAuthenticated ? (
+          <Link href={dashboardHref} className="btn-primary">
+            Dashboard
+          </Link>
+        ) : null}
       </div>
     </header>
   );

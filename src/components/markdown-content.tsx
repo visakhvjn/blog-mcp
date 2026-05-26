@@ -22,8 +22,8 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         "[&_li]:mb-1 [&_li]:leading-7",
         "[&_blockquote]:mb-4 [&_blockquote]:border-l-4 [&_blockquote]:border-[var(--accent)] [&_blockquote]:bg-[var(--surface-muted)] [&_blockquote]:py-1 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-[var(--text-secondary)]",
         "[&_code]:rounded [&_code]:bg-[var(--surface-muted)] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_code]:text-[var(--text)]",
-        "[&_pre]:mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-[var(--border)] [&_pre]:bg-[#2a2724] [&_pre]:p-4",
-        "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[#f0ede8]",
+        "[&_pre]:mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-[var(--border)] [&_pre]:bg-[var(--code-bg)] [&_pre]:p-4",
+        "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[var(--code-text)]",
         "[&_img]:mb-4 [&_img]:max-w-full [&_img]:rounded-xl",
       ].join(" ")}
     >

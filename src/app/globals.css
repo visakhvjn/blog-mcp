@@ -1,25 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #ffffff;
-  --bg-elevated: #fafafa;
-  --surface: #ffffff;
-  --surface-muted: #f5f5f4;
-  --border: #e7e5e4;
-  --border-subtle: #f0eeec;
-  --text: #1c1916;
-  --text-secondary: #44403c;
-  --text-muted: #78716c;
-  --accent: #4a6b5c;
-  --accent-hover: #3a5749;
-  --accent-soft: #e8f0ec;
-  --accent-foreground: #f2f7f4;
-  --danger: #a84840;
-  --danger-soft: #fef2f2;
-  --warning-soft: #fffbeb;
-  --shadow-sm: 0 1px 3px rgb(28 25 22 / 0.06);
-  --shadow-md: 0 6px 24px rgb(28 25 22 / 0.08);
+  --bg: #120d0c;
+  --bg-elevated: #1a1210;
+  --surface: #221816;
+  --surface-muted: #2b1c18;
+  --border: #3d2e28;
+  --border-subtle: #2f221d;
+  --text: #ffffff;
+  --text-secondary: #d1d1d1;
+  --text-muted: #9a8f8a;
+  --accent: #ff5722;
+  --accent-hover: #f4511e;
+  --accent-gradient: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #f4511e 0%, #fb8c00 100%);
+  --accent-soft: rgb(255 87 34 / 0.14);
+  --accent-muted: #ff8a65;
+  --accent-foreground: #ffffff;
+  --danger: #ef5350;
+  --danger-soft: rgb(239 83 80 / 0.12);
+  --warning-soft: rgb(255 152 0 / 0.12);
+  --code-bg: #1a1210;
+  --code-text: #f5f0eb;
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.35);
+  --shadow-md: 0 8px 28px rgb(0 0 0 / 0.45);
   --radius: 0.75rem;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -38,7 +44,12 @@ body {
 
 .page-bg {
   min-height: 100vh;
-  background: var(--bg);
+  background: linear-gradient(
+    180deg,
+    var(--surface-muted) 0%,
+    var(--bg) 42%,
+    var(--bg) 100%
+  );
 }
 
 .page-shell {
@@ -76,21 +87,27 @@ body {
   justify-content: center;
   gap: 0.5rem;
   border-radius: calc(var(--radius) - 2px);
-  background: var(--accent);
+  background: var(--accent-gradient);
   padding: 0.625rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--accent-foreground);
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+  box-shadow: 0 2px 12px rgb(255 87 34 / 0.35);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: var(--accent-gradient-hover);
+  box-shadow: 0 4px 18px rgb(255 87 34 / 0.45);
 }
 
 .btn-primary:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .btn-secondary {
@@ -110,7 +127,7 @@ body {
 
 .btn-secondary:hover {
   background: var(--bg-elevated);
-  border-color: var(--border);
+  border-color: rgb(255 87 34 / 0.35);
 }
 
 .btn-ghost {
@@ -134,7 +151,7 @@ body {
   width: 100%;
   border-radius: calc(var(--radius) - 2px);
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--bg-elevated);
   padding: 0.625rem 0.875rem;
   font-size: 0.9375rem;
   color: var(--text);
@@ -148,7 +165,7 @@ body {
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgb(90 125 110 / 0.15);
+  box-shadow: 0 0 0 3px rgb(255 87 34 / 0.22);
 }
 
 .label {
@@ -168,12 +185,13 @@ body {
 }
 
 .link {
-  color: var(--accent);
+  color: var(--accent-muted);
   font-weight: 500;
   text-underline-offset: 3px;
 }
 
 .link:hover {
+  color: var(--accent);
   text-decoration: underline;
 }
 
@@ -183,7 +201,7 @@ body {
   padding: 0.125rem 0.625rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--accent-hover);
+  color: var(--accent-muted);
 }
 
 .badge-draft {
@@ -197,7 +215,7 @@ body {
 
 .alert-warning {
   border-radius: var(--radius);
-  border: 1px solid #e8dcc4;
+  border: 1px solid rgb(255 152 0 / 0.35);
   background: var(--warning-soft);
   padding: 1rem 1.25rem;
 }
@@ -205,19 +223,19 @@ body {
 .alert-warning-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #5c4528;
+  color: #ffcc80;
 }
 
 .code-block {
   overflow-x: auto;
   border-radius: calc(var(--radius) - 2px);
   border: 1px solid var(--border);
-  background: #2a2724;
+  background: var(--code-bg);
   padding: 1rem 1.25rem;
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.75rem;
   line-height: 1.6;
-  color: #f5f2ed;
+  color: var(--code-text);
 }
 
 /* Marketing landing */
@@ -241,18 +259,20 @@ body {
   justify-content: center;
   gap: 0.5rem;
   border-radius: calc(var(--radius) - 2px);
-  background: var(--accent);
+  background: var(--accent-gradient);
   padding: 0.875rem 1.75rem;
   font-size: 1rem;
   font-weight: 500;
   color: var(--accent-foreground);
-  transition: background 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: var(--shadow-sm);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  box-shadow: 0 4px 20px rgb(255 87 34 / 0.4);
 }
 
 .btn-primary-lg:hover {
-  background: var(--accent-hover);
-  box-shadow: var(--shadow-md);
+  background: var(--accent-gradient-hover);
+  box-shadow: 0 6px 28px rgb(255 87 34 / 0.5);
 }
 
 .pricing-card {
@@ -265,12 +285,21 @@ body {
 
 .pricing-card-featured {
   border-color: var(--accent);
-  box-shadow: 0 8px 32px rgb(58 87 73 / 0.2);
+  box-shadow: 0 8px 40px rgb(255 87 34 / 0.28);
   position: relative;
 }
 
 .hero-glow {
   background:
-    radial-gradient(ellipse 70% 60% at 50% -10%, rgb(74 107 92 / 0.06), transparent),
-    var(--bg);
+    radial-gradient(
+      ellipse 80% 55% at 50% -8%,
+      rgb(255 87 34 / 0.22),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 85% 15%,
+      rgb(255 152 0 / 0.1),
+      transparent
+    ),
+    linear-gradient(180deg, #2b1c18 0%, #120d0c 48%, #120d0c 100%);
 }

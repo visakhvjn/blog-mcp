@@ -48,21 +48,13 @@ const steps = [
   },
 ];
 
-const hobbyFeatures = [
+const planFeatures = [
   "Personal blog at /your-username",
-  "MCP tools for Cursor & AI clients",
-  "Up to 25 published posts",
-  "Markdown editor in dashboard",
-  "Google sign-in",
-];
-
-const premiumFeatures = [
-  "Everything in Hobby",
+  "AI Publishing for Cursor & VS Code",
   "Unlimited published posts",
+  "Topics to organize your writing",
+  "Google sign-in",
   "Custom domain (coming soon)",
-  "Post analytics (coming soon)",
-  "Priority email support",
-  "Early access to new MCP tools",
 ];
 
 /**
@@ -107,7 +99,7 @@ export function LandingPage({ session }: LandingPageProps) {
               />
             </div>
             <p className="mt-4 text-sm text-muted">
-              Free to start · No credit card · Setup in under 2 minutes
+              $0 for 3 months · No credit card · Setup in under 2 minutes
             </p>
           </div>
 
@@ -187,7 +179,7 @@ export function LandingPage({ session }: LandingPageProps) {
           <div className="mt-14 grid gap-8 sm:grid-cols-3">
             {steps.map((s) => (
               <div key={s.step} className="relative">
-                <span className="font-mono text-4xl font-semibold text-[var(--accent-soft)]">
+                <span className="font-mono text-4xl font-semibold text-[var(--accent-muted)]">
                   {s.step}
                 </span>
                 <h3 className="mt-4 text-lg font-medium text-[var(--text)]">
@@ -210,81 +202,36 @@ export function LandingPage({ session }: LandingPageProps) {
               Simple, honest pricing
             </h2>
             <p className="mt-4 text-secondary">
-              Start free on Hobby. Upgrade when you&apos;re ready to grow.
+              One simple plan. Free for your first 3 months.
             </p>
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-4xl gap-6 sm:grid-cols-2">
-            {/* Hobby */}
-            <div className="pricing-card flex flex-col">
-              <p className="text-sm font-medium text-[var(--accent)]">Hobby</p>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-semibold text-[var(--text)]">
-                  $0
-                </span>
-                <span className="text-secondary">/month</span>
-              </div>
-              <p className="mt-2 text-sm text-secondary">
-                Perfect for side projects and learning the workflow.
-              </p>
-              <ul className="mt-8 flex-1 space-y-3">
-                {hobbyFeatures.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-2 text-sm text-secondary"
-                  >
-                    <span className="text-[var(--accent)]">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <HomeCta
-                  isAuthenticated={isAuthenticated}
-                  dashboardHref={dashboardHref}
-                />
-              </div>
-            </div>
-
-            {/* Premium */}
-            <div className="pricing-card pricing-card-featured flex flex-col">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-0.5 text-xs font-medium text-[var(--accent-foreground)]">
-                Most popular
+          <div className="pricing-card pricing-card-featured mx-auto mt-14 flex max-w-md flex-col">
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-4xl font-semibold text-[var(--text)]">
+                $3
               </span>
-              <p className="text-sm font-medium text-[var(--accent)]">Premium</p>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-semibold text-[var(--text)]">
-                  $12
-                </span>
-                <span className="text-secondary">/month</span>
-              </div>
-              <p className="mt-2 text-sm text-secondary">
-                For creators serious about their online presence.
-              </p>
-              <ul className="mt-8 flex-1 space-y-3">
-                {premiumFeatures.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-2 text-sm text-secondary"
-                  >
-                    <span className="text-[var(--accent)]">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <button
-                  type="button"
-                  disabled
-                  className="btn-secondary w-full cursor-not-allowed opacity-70"
-                  title="Billing coming soon"
-                >
-                  Coming soon
-                </button>
-                <p className="mt-2 text-center text-xs text-muted">
-                  Use Hobby for now — we&apos;ll notify you at launch
-                </p>
-              </div>
+              <span className="text-secondary">/month</span>
+            </div>
+            <p className="mt-2 text-lg font-medium text-[var(--accent-muted)]">
+              $0 for your first 3 months
+            </p>
+            <p className="mt-2 text-sm text-secondary">
+              Everything included. Cancel anytime.
+            </p>
+            <ul className="mt-8 flex-1 space-y-3">
+              {planFeatures.map((item) => (
+                <li key={item} className="flex gap-2 text-sm text-secondary">
+                  <span className="text-[var(--accent)]">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8">
+              <HomeCta
+                isAuthenticated={isAuthenticated}
+                dashboardHref={dashboardHref}
+              />
             </div>
           </div>
         </div>
