@@ -8,7 +8,7 @@ const links = [
   { href: "/dashboard/posts", label: "Posts", exact: false },
   { href: "/dashboard/topics", label: "Topics", exact: false },
   { href: "/dashboard/profile", label: "Profile", exact: false },
-  { href: "/dashboard/settings", label: "MCP", exact: false },
+  { href: "/dashboard/settings", label: "AI Publisher", exact: false },
 ];
 
 /**

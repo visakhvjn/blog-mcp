@@ -4,6 +4,7 @@ import {
   updateProfileAction,
   type ProfileFormState,
 } from "@/actions/profile";
+import { ActionSubmitButton } from "@/components/action-submit-button";
 import { useActionState } from "react";
 
 const initialState: ProfileFormState = {};
@@ -56,9 +57,13 @@ export function ProfileSummaryForm({ summary }: ProfileSummaryFormProps) {
         </p>
       ) : null}
 
-      <button type="submit" disabled={pending} className="btn-primary w-fit">
-        {pending ? "Saving…" : "Save profile"}
-      </button>
+      <ActionSubmitButton
+        pending={pending}
+        pendingLabel="Saving…"
+        className="btn-primary w-fit"
+      >
+        Save profile
+      </ActionSubmitButton>
     </form>
   );
 }

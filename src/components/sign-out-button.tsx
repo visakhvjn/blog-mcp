@@ -1,6 +1,7 @@
 "use client";
 
 import { signOutAction } from "@/actions/sign-out";
+import { FormSubmitButton } from "@/components/form-submit-button";
 
 /**
  * Client button that triggers the sign-out server action.
@@ -8,9 +9,9 @@ import { signOutAction } from "@/actions/sign-out";
 export function SignOutButton() {
   return (
     <form action={signOutAction}>
-      <button type="submit" className="btn-ghost">
+      <FormSubmitButton className="btn-ghost" pendingLabel="Signing out…">
         Sign out
-      </button>
+      </FormSubmitButton>
     </form>
   );
 }

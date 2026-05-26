@@ -1,7 +1,10 @@
-import { signIn } from "@/auth";
+"use client";
+
+import { signInWithGoogleAction } from "@/actions/sign-in";
+import { FormSubmitButton } from "@/components/form-submit-button";
 
 /**
- * Server-rendered button that starts Google OAuth sign-in.
+ * Button that starts Google OAuth sign-in with a loading state.
  */
 export function GoogleSignInButton({
   callbackUrl = "/dashboard",
@@ -9,16 +12,17 @@ export function GoogleSignInButton({
   callbackUrl?: string;
 }) {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn("google", { redirectTo: callbackUrl });
-      }}
-    >
-      <button type="submit" className="btn-primary w-full">
-        <GoogleIcon />
-        Sign in with Google
-      </button>
+    <form action={signInWithGoogleAction}>
+      <input type="hidden" name="callbackUrl" value={callbackUrl} />
+      <FormSubmitButton
+        className="btn-primary w-full"
+        pendingLabel="Signing in…"
+      >
+        <span className="inline-flex items-center justify-center gap-2">
+          <GoogleIcon />
+          Sign in with Google
+        </span>
+      </FormSubmitButton>
     </form>
   );
 }

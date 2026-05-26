@@ -1,6 +1,7 @@
 "use client";
 
 import { setUsername, type SetUsernameState } from "@/actions/set-username";
+import { ActionSubmitButton } from "@/components/action-submit-button";
 import { useActionState } from "react";
 
 const initialState: SetUsernameState = {};
@@ -37,9 +38,13 @@ export function OnboardingForm() {
         </p>
       ) : null}
 
-      <button type="submit" disabled={pending} className="btn-primary">
-        {pending ? "Saving…" : "Continue"}
-      </button>
+      <ActionSubmitButton
+        pending={pending}
+        pendingLabel="Saving…"
+        className="btn-primary"
+      >
+        Continue
+      </ActionSubmitButton>
     </form>
   );
 }

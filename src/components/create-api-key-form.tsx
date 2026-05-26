@@ -4,6 +4,7 @@ import {
   createApiKeyAction,
   type CreateApiKeyState,
 } from "@/actions/api-keys";
+import { ActionSubmitButton } from "@/components/action-submit-button";
 import { useActionState, useState } from "react";
 
 const initialState: CreateApiKeyState = {};
@@ -61,9 +62,13 @@ export function CreateApiKeyForm() {
           className="input"
         />
       </div>
-      <button type="submit" disabled={pending} className="btn-primary">
-        {pending ? "Creating…" : "Generate API key"}
-      </button>
+      <ActionSubmitButton
+        pending={pending}
+        pendingLabel="Creating…"
+        className="btn-primary"
+      >
+        Generate API key
+      </ActionSubmitButton>
       {state.error ? (
         <p className="text-sm text-[var(--danger)] sm:basis-full">
           {state.error}

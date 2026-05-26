@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteApiKeyAction } from "@/actions/api-keys";
+import { FormSubmitButton } from "@/components/form-submit-button";
 
 type DeleteApiKeyButtonProps = {
   keyId: string;
@@ -24,12 +25,12 @@ export function DeleteApiKeyButton({ keyId, keyName }: DeleteApiKeyButtonProps) 
         }
       }}
     >
-      <button
-        type="submit"
-        className="text-sm font-medium text-[var(--danger)] hover:underline"
+      <FormSubmitButton
+        pendingLabel="Deleting…"
+        className="text-sm font-medium text-[var(--danger)] hover:underline disabled:opacity-60"
       >
         Delete
-      </button>
+      </FormSubmitButton>
     </form>
   );
 }

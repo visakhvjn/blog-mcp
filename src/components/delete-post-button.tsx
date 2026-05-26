@@ -1,6 +1,7 @@
 "use client";
 
 import { deletePostAction } from "@/actions/posts";
+import { FormSubmitButton } from "@/components/form-submit-button";
 
 type DeletePostButtonProps = {
   postId: string;
@@ -22,12 +23,12 @@ export function DeletePostButton({ postId, postTitle }: DeletePostButtonProps) {
         }
       }}
     >
-      <button
-        type="submit"
-        className="text-sm font-medium text-[var(--danger)] hover:underline"
+      <FormSubmitButton
+        pendingLabel="Deleting…"
+        className="text-sm font-medium text-[var(--danger)] hover:underline disabled:opacity-60"
       >
         Delete
-      </button>
+      </FormSubmitButton>
     </form>
   );
 }
