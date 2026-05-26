@@ -40,8 +40,11 @@ Fill in:
    - **Allowed Callback URLs:** `http://localhost:3000/auth/callback`
    - **Allowed Logout URLs:** `http://localhost:3000`
    - (Optional) Enable **Google** social login under Authentication → Social
-   - Create an **API** with an identifier (e.g. `https://blog-mcp-api`) → set `AUTH0_AUDIENCE` to that value
-   - Enable **OIDC Dynamic Application Registration** if ChatGPT requires DCR (Settings → Advanced)
+   - Create an **API** with identifier `https://blog-mcp-five.vercel.app/api/mcp` (must match ChatGPT `resource=` and `AUTH0_AUDIENCE`)
+   - On that API → **Access Settings** → enable **Allow Offline Access** (refresh tokens for ChatGPT)
+   - **Applications** tab on the API → authorize the **ChatGPT** app (`tpc_...`)
+   - Enable **OIDC Dynamic Application Registration** (Settings → Advanced)
+   - For the ChatGPT app (`tpc_...`): **Settings → Advanced → Grant Types** → enable **Refresh Token**; enable **Refresh Token Rotation** for public clients
 
 4. Push the Prisma schema to MongoDB:
 

@@ -11,6 +11,12 @@ export async function GET(): Promise<Response> {
     resource: `${baseUrl}/api/mcp`,
     authorization_servers: issuer ? [issuer] : [],
     bearer_methods_supported: ["header"],
+    scopes_supported: [
+      "openid",
+      "profile",
+      "email",
+      "offline_access",
+    ],
     resource_documentation: `${baseUrl}/dashboard/settings`,
   });
 }
