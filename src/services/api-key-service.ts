@@ -16,7 +16,7 @@ export type ApiKeyListItem = {
 export async function listApiKeysForUser(
   userId: string,
 ): Promise<ApiKeyListItem[]> {
-  const keys = await prisma.apiKey.findMany({
+  return prisma.apiKey.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     select: {
@@ -25,13 +25,8 @@ export async function listApiKeysForUser(
       keyPrefix: true,
       lastUsedAt: true,
       createdAt: true,
-      revokedAt: true,
     },
   });
-
-  return keys
-    .filter((key) => !key.revokedAt)
-    .map(({ revokedAt: _revokedAt, ...key }) => key);
 }
 
 /**

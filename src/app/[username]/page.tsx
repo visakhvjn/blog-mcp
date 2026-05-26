@@ -9,7 +9,6 @@ import {
 } from "@/services/portfolio-service";
 import { PageShell } from "@/components/page-shell";
 import { PublicSiteFooter } from "@/components/site-footer";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type PageProps = {

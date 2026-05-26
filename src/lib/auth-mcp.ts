@@ -67,7 +67,7 @@ async function resolveUserForAuth0Token(
     return null;
   }
 
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { auth0Sub: sub },
     select: { id: true, username: true },
   });
