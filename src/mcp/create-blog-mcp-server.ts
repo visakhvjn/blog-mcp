@@ -16,6 +16,7 @@ import {
 } from "@/services/post-service";
 import {
   createTopic,
+  deleteTopic,
   listTopicsByUser,
   resolveTopicRefForUser,
 } from "@/services/topic-service";
@@ -270,6 +271,23 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
       const deleted = await deletePost(id, ctx.userId);
       if (!deleted) {
         return mcpToolError("Post not found.");
+      }
+      return jsonToolResult({ ok: true, deletedId: id });
+    },
+  );
+
+  server.registerTool(
+    "delete_topic",
+    {
+      description: "Permanently delete a topic by id.",
+      inputSchema: {
+        id: z.string().describe("Topic id to delete"),
+      },
+    },
+    async ({ id }) => {
+      const deleted = await deleteTopic(id, ctx.userId);
+      if (!deleted) {
+        return mcpToolError("Topic not found.");
       }
       return jsonToolResult({ ok: true, deletedId: id });
     },
