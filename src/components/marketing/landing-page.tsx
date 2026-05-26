@@ -237,28 +237,6 @@ export function LandingPage({ session }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="section-pad">
-        <div className="marketing-container">
-          <div className="card mx-auto max-w-3xl px-8 py-12 text-center sm:px-12">
-            <h2 className="text-2xl font-semibold text-[var(--text)] sm:text-3xl">
-              Ready to build your presence with AI?
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-secondary">
-              Join Blog MCP and publish your first post today — from Cursor or
-              the dashboard.
-            </p>
-            <div className="mt-8 flex justify-center">
-              <HomeCta
-                isAuthenticated={isAuthenticated}
-                dashboardHref={dashboardHref}
-                large
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-[var(--border-subtle)] bg-[var(--surface)] py-10">
         <div className="marketing-container flex flex-col items-center justify-between gap-4 sm:flex-row">
