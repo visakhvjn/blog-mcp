@@ -1,5 +1,6 @@
 import { PublicPostList } from "@/components/public-post-list";
 import { PageShell } from "@/components/page-shell";
+import { PublicSiteFooter } from "@/components/site-footer";
 import {
   getPublicAuthorByUsername,
   getPublicTopicByUsernameAndSlug,
@@ -69,11 +70,7 @@ export default async function PublicTopicPage({ params }: PageProps) {
         <PublicPostList username={author.username} posts={topic.posts} />
       </section>
 
-      <footer className="mt-16 text-center text-sm text-muted">
-        <Link href="/" className="link">
-          Blog MCP
-        </Link>
-      </footer>
+      <PublicSiteFooter />
     </PageShell>
   );
 }

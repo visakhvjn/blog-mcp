@@ -1,5 +1,6 @@
 import { HomeCta } from "@/components/marketing/home-cta";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { BuiltByAttribution } from "@/components/site-footer";
 import Link from "next/link";
 import type { Session } from "next-auth";
 
@@ -241,7 +242,7 @@ export function LandingPage({ session }: LandingPageProps) {
       <footer className="border-t border-[var(--border-subtle)] bg-[var(--surface)] py-10">
         <div className="marketing-container flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-sm text-muted">
-            © {new Date().getFullYear()} Blog MCP
+            © {new Date().getFullYear()} Blog MCP · <BuiltByAttribution />
           </p>
           <div className="flex gap-6 text-sm text-secondary">
             <a href="#features" className="hover:text-[var(--text)]">

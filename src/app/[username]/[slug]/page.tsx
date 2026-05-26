@@ -1,5 +1,6 @@
 import { MarkdownContent } from "@/components/markdown-content";
 import { PageShell } from "@/components/page-shell";
+import { PublicSiteFooter } from "@/components/site-footer";
 import { getPublishedPostByUsernameAndSlug } from "@/services/portfolio-service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -62,11 +63,11 @@ export default async function PublicPostPage({ params }: PageProps) {
         <MarkdownContent content={post.content} />
       </article>
 
-      <footer className="mt-12 text-center text-sm text-muted">
+      <PublicSiteFooter className="mt-12 text-center text-sm text-muted">
         <Link href={`/${author.username}`} className="link">
           More from {author.name ?? author.username}
         </Link>
-      </footer>
+      </PublicSiteFooter>
     </PageShell>
   );
 }

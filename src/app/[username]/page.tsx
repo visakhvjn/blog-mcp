@@ -8,6 +8,7 @@ import {
   listPublishedPostsForAuthor,
 } from "@/services/portfolio-service";
 import { PageShell } from "@/components/page-shell";
+import { PublicSiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -103,11 +104,7 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
         </div>
       )}
 
-      <footer className="mt-16 text-center text-sm text-muted">
-        <Link href="/" className="link">
-          Blog MCP
-        </Link>
-      </footer>
+      <PublicSiteFooter />
     </PageShell>
   );
 }
