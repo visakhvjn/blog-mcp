@@ -1,16 +1,19 @@
+import { toMcpStructured } from "@/mcp/tool-schemas";
+
 /**
- * Formats data as MCP tool text content (JSON).
- * Inputs: any JSON-serializable value. Output: MCP content block array.
+ * MCP tool success result with structuredContent (outputSchema) and text fallback.
  */
-export function jsonToolResult(data: unknown): {
+export function jsonToolResult<T extends Record<string, unknown>>(data: T): {
+  structuredContent: T;
   content: Array<{ type: "text"; text: string }>;
-  isError?: boolean;
 } {
+  const structuredContent = toMcpStructured(data);
   return {
+    structuredContent,
     content: [
       {
         type: "text",
-        text: JSON.stringify(data, null, 2),
+        text: JSON.stringify(structuredContent, null, 2),
       },
     ],
   };
@@ -18,7 +21,6 @@ export function jsonToolResult(data: unknown): {
 
 /**
  * Formats an error message for MCP tool responses.
- * Inputs: message string. Output: MCP error content.
  */
 export function mcpToolError(message: string): {
   content: Array<{ type: "text"; text: string }>;

@@ -22,15 +22,41 @@ import {
 } from "@/services/topic-service";
 import { getAppBaseUrl } from "@/lib/app-base-url";
 import { jsonToolResult, mcpToolError } from "@/mcp/json-result";
+import {
+  createPostOutputSchema,
+  createTopicOutputSchema,
+  deleteOutputSchema,
+  getPostOutputSchema,
+  listPostsOutputSchema,
+  listTopicsOutputSchema,
+  toMcpStructured,
+  updatePostOutputSchema,
+} from "@/mcp/tool-schemas";
 
 type McpUserContext = {
   userId: string;
   username: string | null;
 };
 
+function postWithPublicUrl(
+  post: NonNullable<Awaited<ReturnType<typeof getPostByIdForUser>>>,
+  username: string | null,
+  baseUrl: string,
+) {
+  const publicUrl =
+    username && post.status === PostStatus.PUBLISHED
+      ? `${baseUrl}/${username}/${post.slug}`
+      : null;
+  return jsonToolResult(
+    toMcpStructured({
+      post,
+      publicUrl,
+    }),
+  );
+}
+
 /**
  * Builds an MCP server with blog post tools scoped to one user.
- * Inputs: user id and username. Output: configured McpServer instance.
  */
 export function createBlogMcpServer(ctx: McpUserContext): McpServer {
   const server = new McpServer({
@@ -63,6 +89,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
           .optional()
           .describe("If true, only posts with no topic"),
       },
+      outputSchema: listPostsOutputSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async ({ status, limit, topicId, unassignedOnly }) => {
       const posts = await listPostsByUser(ctx.userId, {
@@ -83,6 +115,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
         id: z.string().optional().describe("Post id"),
         slug: z.string().optional().describe("Post slug"),
       },
+      outputSchema: getPostOutputSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async ({ id, slug }) => {
       if (!id && !slug) {
@@ -94,11 +132,7 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
       if (!post) {
         return mcpToolError("Post not found.");
       }
-      const publicUrl =
-        ctx.username && post.status === PostStatus.PUBLISHED
-          ? `${baseUrl}/${ctx.username}/${post.slug}`
-          : null;
-      return jsonToolResult({ post, publicUrl });
+      return postWithPublicUrl(post, ctx.username, baseUrl);
     },
   );
 
@@ -107,6 +141,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
     {
       description: "List all topics for the authenticated user.",
       inputSchema: {},
+      outputSchema: listTopicsOutputSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async () => {
       const topics = await listTopicsByUser(ctx.userId);
@@ -127,6 +167,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
           .max(80)
           .optional(),
       },
+      outputSchema: createTopicOutputSchema.shape,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async (args) => {
       try {
@@ -135,7 +181,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
         const publicUrl = ctx.username
           ? `${baseUrl}/${ctx.username}/topics/${topic.slug}`
           : null;
-        return jsonToolResult({ topic, publicUrl });
+        return jsonToolResult(
+          toMcpStructured({
+            topic,
+            publicUrl,
+          }),
+        );
       } catch (err) {
         const message =
           err instanceof z.ZodError
@@ -171,6 +222,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
           .optional()
           .describe("Topic slug (used if topicId omitted)"),
       },
+      outputSchema: createPostOutputSchema.shape,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: true,
+      },
     },
     async (args) => {
       try {
@@ -179,13 +236,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
           topicId: rest.topicId,
           topicSlug,
         });
-        const input = createPostSchema.parse({ ...rest, topicId: topicId ?? undefined });
+        const input = createPostSchema.parse({
+          ...rest,
+          topicId: topicId ?? undefined,
+        });
         const post = await createPost(ctx.userId, input);
-        const publicUrl =
-          ctx.username && post.status === PostStatus.PUBLISHED
-            ? `${baseUrl}/${ctx.username}/${post.slug}`
-            : null;
-        return jsonToolResult({ post, publicUrl });
+        return postWithPublicUrl(post, ctx.username, baseUrl);
       } catch (err) {
         const message =
           err instanceof z.ZodError
@@ -223,6 +279,12 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
           .optional()
           .describe("Set topic by slug (ignored if topicId is null)"),
       },
+      outputSchema: updatePostOutputSchema.shape,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: true,
+      },
     },
     async (args) => {
       const { id, topicSlug, ...rest } = args;
@@ -243,11 +305,7 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
         if (!post) {
           return mcpToolError("Post not found.");
         }
-        const publicUrl =
-          ctx.username && post.status === PostStatus.PUBLISHED
-            ? `${baseUrl}/${ctx.username}/${post.slug}`
-            : null;
-        return jsonToolResult({ post, publicUrl });
+        return postWithPublicUrl(post, ctx.username, baseUrl);
       } catch (err) {
         const message =
           err instanceof z.ZodError
@@ -267,13 +325,19 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
       inputSchema: {
         id: z.string().describe("Post id to delete"),
       },
+      outputSchema: deleteOutputSchema.shape,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true,
+      },
     },
     async ({ id }) => {
       const deleted = await deletePost(id, ctx.userId);
       if (!deleted) {
         return mcpToolError("Post not found.");
       }
-      return jsonToolResult({ ok: true, deletedId: id });
+      return jsonToolResult({ ok: true as const, deletedId: id });
     },
   );
 
@@ -284,13 +348,19 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
       inputSchema: {
         id: z.string().describe("Topic id to delete"),
       },
+      outputSchema: deleteOutputSchema.shape,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ id }) => {
       const deleted = await deleteTopic(id, ctx.userId);
       if (!deleted) {
         return mcpToolError("Topic not found.");
       }
-      return jsonToolResult({ ok: true, deletedId: id });
+      return jsonToolResult({ ok: true as const, deletedId: id });
     },
   );
 
