@@ -2,10 +2,10 @@ import { HomeCta } from "@/components/marketing/home-cta";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { BuiltByAttribution } from "@/components/site-footer";
 import Link from "next/link";
-import type { Session } from "next-auth";
+import type { AppSession } from "@/lib/app-session";
 
 type LandingPageProps = {
-  session: Session | null;
+  session: AppSession | null;
 };
 
 const features = [
@@ -33,7 +33,7 @@ const steps = [
   {
     step: "01",
     title: "Sign in & claim your name",
-    description: "Google login in seconds. Pick a username that becomes your public URL.",
+    description: "Sign in in seconds. Pick a username that becomes your public URL.",
   },
   {
     step: "02",
@@ -54,7 +54,7 @@ const planFeatures = [
   "AI Publishing for Cursor & VS Code",
   "Unlimited published posts",
   "Topics to organize your writing",
-  "Google sign-in",
+  "Secure sign-in",
   "Custom domain (coming soon)",
 ];
 

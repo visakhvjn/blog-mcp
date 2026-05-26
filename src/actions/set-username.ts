@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { prisma } from "@/lib/prisma";
 import { parseUsername } from "@/lib/username";
 import { Prisma } from "@prisma/client";
@@ -19,7 +19,7 @@ export async function setUsername(
   _prevState: SetUsernameState,
   formData: FormData,
 ): Promise<SetUsernameState> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
     return { error: "You must be signed in." };
   }

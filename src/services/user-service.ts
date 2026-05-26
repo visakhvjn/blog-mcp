@@ -8,6 +8,10 @@ export type OAuthUserProfile = {
   image: string | null;
 };
 
+export type Auth0UserProfile = OAuthUserProfile & {
+  auth0Sub: string;
+};
+
 export type UserProfile = {
   id: string;
   username: string;
@@ -17,20 +21,35 @@ export type UserProfile = {
 };
 
 /**
- * Creates or updates a user from Google OAuth without Prisma upsert (MongoDB M0 has no transactions).
- * Inputs: email, name, image from the provider. Output: saved user row.
+ * Creates or updates a user from Auth0 without Prisma upsert (MongoDB M0 has no transactions).
  */
-export async function syncUserFromOAuth(
-  profile: OAuthUserProfile,
+export async function syncUserFromAuth0(
+  profile: Auth0UserProfile,
 ): Promise<User> {
-  const existing = await prisma.user.findUnique({
+  const bySub = await prisma.user.findUnique({
+    where: { auth0Sub: profile.auth0Sub },
+  });
+
+  if (bySub) {
+    return prisma.user.update({
+      where: { auth0Sub: profile.auth0Sub },
+      data: {
+        email: profile.email,
+        name: profile.name,
+        image: profile.image,
+      },
+    });
+  }
+
+  const byEmail = await prisma.user.findUnique({
     where: { email: profile.email },
   });
 
-  if (existing) {
+  if (byEmail) {
     return prisma.user.update({
       where: { email: profile.email },
       data: {
+        auth0Sub: profile.auth0Sub,
         name: profile.name,
         image: profile.image,
       },
@@ -39,6 +58,7 @@ export async function syncUserFromOAuth(
 
   return prisma.user.create({
     data: {
+      auth0Sub: profile.auth0Sub,
       email: profile.email,
       name: profile.name,
       image: profile.image,

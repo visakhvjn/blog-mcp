@@ -1,4 +1,5 @@
-import { authenticateApiKey } from "@/lib/auth-api-key";
+import { authenticateMcpRequest } from "@/lib/auth-mcp";
+import { getAppBaseUrl, getAuth0Issuer } from "@/lib/app-base-url";
 import { createBlogMcpServer } from "@/mcp/create-blog-mcp-server";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { prisma } from "@/lib/prisma";
@@ -12,21 +13,33 @@ const MCP_HEADERS = {
     "Content-Type, Authorization, mcp-session-id, mcp-protocol-version, Last-Event-ID",
 };
 
-/**
- * Handles MCP Streamable HTTP after API key authentication.
- * Inputs: authenticated Request. Output: MCP protocol Response.
- */
+function unauthorizedResponse(): Response {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...MCP_HEADERS,
+  };
+
+  const issuer = getAuth0Issuer();
+  const resource = `${getAppBaseUrl()}/api/mcp`;
+  if (issuer) {
+    headers["WWW-Authenticate"] =
+      `Bearer resource="${resource}", authorization_uri="${issuer}"`;
+  }
+
+  return new Response(
+    JSON.stringify({
+      jsonrpc: "2.0",
+      error: { code: -32001, message: "Unauthorized" },
+      id: null,
+    }),
+    { status: 401, headers },
+  );
+}
+
 async function handleMcpRequest(request: Request): Promise<Response> {
-  const auth = await authenticateApiKey(request);
+  const auth = await authenticateMcpRequest(request);
   if (!auth) {
-    return new Response(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        error: { code: -32001, message: "Unauthorized" },
-        id: null,
-      }),
-      { status: 401, headers: { "Content-Type": "application/json" } },
-    );
+    return unauthorizedResponse();
   }
 
   const user = await prisma.user.findUnique({
@@ -34,14 +47,7 @@ async function handleMcpRequest(request: Request): Promise<Response> {
     select: { id: true, username: true },
   });
   if (!user) {
-    return new Response(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        error: { code: -32001, message: "Unauthorized" },
-        id: null,
-      }),
-      { status: 401, headers: { "Content-Type": "application/json" } },
-    );
+    return unauthorizedResponse();
   }
 
   const transport = new WebStandardStreamableHTTPServerTransport({
@@ -67,22 +73,18 @@ async function handleMcpRequest(request: Request): Promise<Response> {
   });
 }
 
-/** POST — MCP JSON-RPC messages */
 export async function POST(request: Request): Promise<Response> {
   return handleMcpRequest(request);
 }
 
-/** GET — MCP SSE stream (some clients) */
 export async function GET(request: Request): Promise<Response> {
   return handleMcpRequest(request);
 }
 
-/** DELETE — MCP session teardown */
 export async function DELETE(request: Request): Promise<Response> {
   return handleMcpRequest(request);
 }
 
-/** OPTIONS — CORS preflight */
 export async function OPTIONS(): Promise<Response> {
   return new Response(null, { status: 204, headers: MCP_HEADERS });
 }

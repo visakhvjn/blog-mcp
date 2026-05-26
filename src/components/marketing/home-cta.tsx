@@ -1,4 +1,4 @@
-import { GoogleSignInButton } from "@/components/google-sign-in-button";
+import { SignInButton } from "@/components/sign-in-button";
 import Link from "next/link";
 
 type HomeCtaProps = {
@@ -29,7 +29,7 @@ export function HomeCta({
   return (
     <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
       <div className={large ? "w-full sm:w-auto sm:min-w-[200px]" : "w-full sm:w-auto"}>
-        <GoogleSignInButton callbackUrl="/dashboard" />
+        <SignInButton returnTo="/dashboard" />
       </div>
       <a
         href="#pricing"

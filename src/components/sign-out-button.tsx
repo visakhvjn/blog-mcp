@@ -1,17 +1,12 @@
-"use client";
-
-import { signOutAction } from "@/actions/sign-out";
-import { FormSubmitButton } from "@/components/form-submit-button";
+import Link from "next/link";
 
 /**
- * Client button that triggers the sign-out server action.
+ * Signs out via Auth0's mounted /auth/logout route.
  */
 export function SignOutButton() {
   return (
-    <form action={signOutAction}>
-      <FormSubmitButton className="btn-ghost" pendingLabel="Signing out…">
-        Sign out
-      </FormSubmitButton>
-    </form>
+    <Link href="/auth/logout" className="btn-ghost">
+      Sign out
+    </Link>
   );
 }

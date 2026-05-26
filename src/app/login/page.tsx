@@ -1,4 +1,4 @@
-import { GoogleSignInButton } from "@/components/google-sign-in-button";
+import { SignInButton } from "@/components/sign-in-button";
 import { PageShell } from "@/components/page-shell";
 import Link from "next/link";
 
@@ -10,18 +10,15 @@ type PageProps = {
   searchParams: Promise<{ error?: string }>;
 };
 
-/**
- * Maps Auth.js error codes to user-facing sign-in messages.
- */
 function getLoginErrorMessage(error: string | undefined): string | null {
   if (!error) {
     return null;
   }
   if (error === "AccessDenied") {
-    return "Sign-in was denied. This usually means the app could not save your account to the database. On Vercel, confirm DATABASE_URL is set and MongoDB Atlas allows connections from anywhere (0.0.0.0/0), then redeploy.";
+    return "Sign-in was denied. Confirm DATABASE_URL is set and MongoDB is reachable, then try again.";
   }
-  if (error === "Configuration") {
-    return "Auth is misconfigured. Check AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, and AUTH_URL on your host.";
+  if (error === "auth" || error === "Configuration") {
+    return "Auth is misconfigured. Check Auth0 env vars (AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_SECRET, APP_BASE_URL).";
   }
   return "Sign-in failed. Please try again.";
 }
@@ -38,7 +35,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
             Welcome back
           </h1>
           <p className="mt-2 text-sm text-secondary">
-            Use your Google account to continue.
+            Sign in to manage your blog and MCP keys.
           </p>
         </div>
 
@@ -52,7 +49,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
         ) : null}
 
         <div className="card p-6">
-          <GoogleSignInButton callbackUrl="/dashboard" />
+          <SignInButton returnTo="/dashboard" />
         </div>
         <p className="text-center text-sm text-muted">
           <Link href="/" className="link">

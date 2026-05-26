@@ -7,9 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// App user (Google sign-in). Username is set during onboarding.
+/// App user (Auth0 sign-in). Username is set during onboarding.
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  /// Auth0 user id (`sub` claim) for MCP OAuth tokens.
+  auth0Sub  String?  @unique
   email     String   @unique
   name      String?
   image     String?

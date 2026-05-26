@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import {
   createApiKeyForUser,
   deleteApiKeyForUser,
@@ -21,7 +21,7 @@ export async function createApiKeyAction(
   _prevState: CreateApiKeyState,
   formData: FormData,
 ): Promise<CreateApiKeyState> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
     return { error: "You must be signed in." };
   }
@@ -47,7 +47,7 @@ export async function createApiKeyAction(
  * Inputs: keyId. Output: revalidates settings page.
  */
 export async function deleteApiKeyAction(keyId: string): Promise<void> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
     return;
   }

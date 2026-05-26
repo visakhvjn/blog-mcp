@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { deleteTopic } from "@/services/topic-service";
 import { redirect } from "next/navigation";
 
@@ -9,9 +9,9 @@ import { redirect } from "next/navigation";
  * Inputs: topicId. Output: redirect.
  */
 export async function deleteTopicAction(topicId: string): Promise<void> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect("/auth/login?returnTo=/dashboard");
   }
 
   await deleteTopic(topicId, session.user.id);

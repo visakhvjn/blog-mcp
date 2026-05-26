@@ -20,6 +20,7 @@ import {
   listTopicsByUser,
   resolveTopicRefForUser,
 } from "@/services/topic-service";
+import { getAppBaseUrl } from "@/lib/app-base-url";
 import { jsonToolResult, mcpToolError } from "@/mcp/json-result";
 
 type McpUserContext = {
@@ -37,7 +38,7 @@ export function createBlogMcpServer(ctx: McpUserContext): McpServer {
     version: "1.0.0",
   });
 
-  const baseUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "";
+  const baseUrl = getAppBaseUrl();
 
   server.registerTool(
     "list_posts",

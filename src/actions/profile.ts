@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { updateProfileSchema } from "@/lib/user-validation";
 import { updateUserProfile } from "@/services/user-service";
 import { revalidatePath } from "next/cache";
@@ -19,7 +19,7 @@ export async function updateProfileAction(
   _prevState: ProfileFormState,
   formData: FormData,
 ): Promise<ProfileFormState> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id || !session.user.username) {
     return { error: "You must be signed in." };
   }

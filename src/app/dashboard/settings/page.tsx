@@ -4,6 +4,7 @@ import { DeleteApiKeyButton } from "@/components/delete-api-key-button";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PageShell } from "@/components/page-shell";
+import { getAppBaseUrl } from "@/lib/app-base-url";
 import { requireUser } from "@/lib/require-user";
 import { listApiKeysForUser } from "@/services/api-key-service";
 
@@ -14,7 +15,7 @@ export const metadata = {
 export default async function SettingsPage() {
   const user = await requireUser();
   const keys = await listApiKeysForUser(user.id);
-  const mcpUrl = `${process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/mcp`;
+  const mcpUrl = `${getAppBaseUrl()}/api/mcp`;
 
   return (
     <PageShell wide>

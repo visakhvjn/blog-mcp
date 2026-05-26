@@ -1,10 +1,7 @@
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { LandingPage } from "@/components/marketing/landing-page";
 
-/**
- * Marketing home page for Blog MCP.
- */
 export default async function HomePage() {
-  const session = await auth();
+  const session = await getAppSession();
   return <LandingPage session={session} />;
 }

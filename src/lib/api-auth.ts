@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { NextResponse } from "next/server";
 
 export type SessionUser = {
@@ -6,14 +6,10 @@ export type SessionUser = {
   username?: string | null;
 };
 
-/**
- * Returns the signed-in user for API routes or a 401 JSON response.
- * Inputs: none. Output: user object or NextResponse error.
- */
 export async function requireSessionUser(): Promise<
   SessionUser | NextResponse
 > {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -23,9 +19,6 @@ export async function requireSessionUser(): Promise<
   };
 }
 
-/**
- * Type guard: true when requireSessionUser returned an error response.
- */
 export function isAuthError(
   result: SessionUser | NextResponse,
 ): result is NextResponse {

@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { redirect } from "next/navigation";
 
 export type RequiredUser = {
@@ -11,12 +11,11 @@ export type RequiredUser = {
 
 /**
  * Loads session and redirects if not signed in or missing username.
- * Inputs: none. Output: authenticated user with username set.
  */
 export async function requireUser(): Promise<RequiredUser> {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect("/auth/login?returnTo=/dashboard");
   }
   if (!session.user.username) {
     redirect("/onboarding");

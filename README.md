@@ -1,12 +1,12 @@
 # Blog MCP
 
-Phased blogging platform with MCP authoring for Cursor. **Phase 1** includes Google sign-in, username onboarding, and logout.
+Phased blogging platform with MCP authoring for Cursor. **Phase 1** includes Auth0 sign-in, username onboarding, and logout.
 
 ## Prerequisites
 
 - Node.js 20+
 - MongoDB Atlas cluster (or local MongoDB)
-- Google OAuth credentials
+- [Auth0](https://auth0.com) tenant (free tier works)
 
 ## Setup
 
@@ -27,14 +27,21 @@ Fill in:
 | Variable | Description |
 |----------|-------------|
 | `DATABASE_URL` | MongoDB connection string |
-| `AUTH_SECRET` | Random secret (`openssl rand -base64 32`) |
-| `AUTH_GOOGLE_ID` | Google OAuth client ID |
-| `AUTH_GOOGLE_SECRET` | Google OAuth client secret |
-| `AUTH_URL` / `NEXTAUTH_URL` | `http://localhost:3000` for local dev |
+| `AUTH0_DOMAIN` | Tenant domain (e.g. `dev-xxx.us.auth0.com`) |
+| `AUTH0_CLIENT_ID` | Auth0 application client ID |
+| `AUTH0_CLIENT_SECRET` | Auth0 application client secret |
+| `AUTH0_SECRET` | Session cookie secret (`openssl rand -hex 32`) |
+| `APP_BASE_URL` | `http://localhost:3000` for local dev |
+| `AUTH0_AUDIENCE` | Auth0 API identifier (for ChatGPT MCP OAuth) |
 
-3. Google Cloud Console → **APIs & Services → Credentials** → OAuth 2.0 Client ID (Web):
+3. Auth0 Dashboard:
 
-   - Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+   - Create a **Regular Web Application**
+   - **Allowed Callback URLs:** `http://localhost:3000/auth/callback`
+   - **Allowed Logout URLs:** `http://localhost:3000`
+   - (Optional) Enable **Google** social login under Authentication → Social
+   - Create an **API** with an identifier (e.g. `https://blog-mcp-api`) → set `AUTH0_AUDIENCE` to that value
+   - Enable **OIDC Dynamic Application Registration** if ChatGPT requires DCR (Settings → Advanced)
 
 4. Push the Prisma schema to MongoDB:
 
@@ -52,7 +59,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Phase 1 flows
 
-- **Sign in** — Home or `/login` → Google OAuth
+- **Sign in** — Home or `/login` → Auth0 (Google social optional in Auth0)
 - **Onboarding** — First-time users choose a unique username at `/onboarding`
 - **Dashboard** — `/dashboard` shows profile and username; **Sign out** returns to home
 
@@ -112,7 +119,8 @@ export BLOG_MCP_API_KEY=blog_your_key_here
 6. Restart Cursor (Settings → MCP → enable **blog-mcp**)
 
 **Endpoint:** `http://localhost:3000/api/mcp`  
-**Auth:** `Authorization: Bearer <api_key>`
+**Auth (Cursor / VS Code):** `Authorization: Bearer <api_key>`  
+**Auth (ChatGPT):** OAuth via Auth0 — connect using your production URL; API keys still work for IDE clients
 
 | Tool | Description |
 |------|-------------|

@@ -1,6 +1,6 @@
 import { OnboardingForm } from "@/components/onboarding-form";
 import { PageShell } from "@/components/page-shell";
-import { auth } from "@/auth";
+import { getAppSession } from "@/lib/app-session";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -8,9 +8,9 @@ export const metadata = {
 };
 
 export default async function OnboardingPage() {
-  const session = await auth();
+  const session = await getAppSession();
   if (!session?.user) {
-    redirect("/login");
+    redirect("/auth/login?returnTo=/onboarding");
   }
   if (session.user.username) {
     redirect("/dashboard");

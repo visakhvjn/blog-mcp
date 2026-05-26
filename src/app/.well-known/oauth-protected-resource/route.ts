@@ -1,11 +1,15 @@
+import { getAppBaseUrl, getAuth0Issuer } from "@/lib/app-base-url";
+
 /**
- * Tells MCP clients this server uses API keys, not OAuth (RFC 9728).
+ * RFC 9728 metadata so ChatGPT discovers Auth0 for MCP OAuth.
  */
 export async function GET(): Promise<Response> {
-  const baseUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "";
+  const baseUrl = getAppBaseUrl();
+  const issuer = getAuth0Issuer();
+
   return Response.json({
     resource: `${baseUrl}/api/mcp`,
-    authorization_servers: [],
+    authorization_servers: issuer ? [issuer] : [],
     bearer_methods_supported: ["header"],
     resource_documentation: `${baseUrl}/dashboard/settings`,
   });
