@@ -25,6 +25,15 @@ export type PublicPostSummary = {
   createdAt: Date;
 };
 
+export type TopicAdjacentPosts = {
+  topic: {
+    name: string;
+    slug: string;
+  };
+  previous: PublicPostSummary | null;
+  next: PublicPostSummary | null;
+};
+
 export type PublicTopicWithPosts = {
   id: string;
   name: string;
@@ -136,6 +145,72 @@ export async function getPublishedPostByUsernameAndSlug(
 }
 
 /**
+ * Returns previous/next published posts in the same topic as the current post.
+ * Order follows topic page ordering (newest first by publishedAt).
+ */
+export async function getTopicAdjacentPostsForPublishedPost(
+  userId: string,
+  postId: string,
+): Promise<TopicAdjacentPosts | null> {
+  const current = await prisma.post.findFirst({
+    where: {
+      id: postId,
+      userId,
+      status: PostStatus.PUBLISHED,
+    },
+    select: {
+      id: true,
+      topicId: true,
+    },
+  });
+
+  if (!current?.topicId) {
+    return null;
+  }
+
+  const topic = await prisma.topic.findFirst({
+    where: {
+      id: current.topicId,
+      userId,
+    },
+    select: {
+      name: true,
+      slug: true,
+      posts: {
+        where: { status: PostStatus.PUBLISHED },
+        orderBy: [{ publishedAt: "asc" }, { createdAt: "asc" }],
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          excerpt: true,
+          publishedAt: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+
+  if (!topic) {
+    return null;
+  }
+
+  const index = topic.posts.findIndex((p) => p.id === current.id);
+  if (index === -1) {
+    return null;
+  }
+
+  return {
+    topic: {
+      name: topic.name,
+      slug: topic.slug,
+    },
+    previous: index > 0 ? topic.posts[index - 1] : null,
+    next: index < topic.posts.length - 1 ? topic.posts[index + 1] : null,
+  };
+}
+
+/**
  * Lists topics that have at least one published post, with those posts.
  * Inputs: userId. Output: topics with nested published summaries.
  */
@@ -155,7 +230,7 @@ export async function listPublicTopicsWithPosts(
       description: true,
       posts: {
         where: { status: PostStatus.PUBLISHED },
-        orderBy: { publishedAt: "desc" },
+        orderBy: { createdAt: "asc" },
         select: {
           id: true,
           title: true,
@@ -209,7 +284,7 @@ export async function getPublicTopicByUsernameAndSlug(
       description: true,
       posts: {
         where: { status: PostStatus.PUBLISHED },
-        orderBy: { publishedAt: "desc" },
+        orderBy: { createdAt: "asc" },
         select: {
           id: true,
           title: true,

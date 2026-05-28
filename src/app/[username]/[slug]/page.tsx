@@ -1,7 +1,10 @@
 import { MarkdownContent } from "@/components/markdown-content";
 import { PageShell } from "@/components/page-shell";
 import { PublicSiteFooter } from "@/components/site-footer";
-import { getPublishedPostByUsernameAndSlug } from "@/services/portfolio-service";
+import {
+  getPublishedPostByUsernameAndSlug,
+  getTopicAdjacentPostsForPublishedPost,
+} from "@/services/portfolio-service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -29,6 +32,7 @@ export default async function PublicPostPage({ params }: PageProps) {
   }
 
   const { author, post } = result;
+  const adjacent = await getTopicAdjacentPostsForPublishedPost(author.id, post.id);
   const publishedLabel = post.publishedAt
     ? post.publishedAt.toLocaleDateString(undefined, {
         year: "numeric",
@@ -47,6 +51,17 @@ export default async function PublicPostPage({ params }: PageProps) {
 
       <article>
         <header className="mb-10 border-b border-[var(--border)] pb-8">
+          {adjacent?.previous ? (
+            <div className="mb-5">
+              <p className="mb-1 text-xs uppercase tracking-wide text-muted">Previous in {adjacent.topic.name}</p>
+              <Link
+                href={`/${author.username}/${adjacent.previous.slug}`}
+                className="link text-sm"
+              >
+                ← {adjacent.previous.title}
+              </Link>
+            </div>
+          ) : null}
           <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[var(--text)] sm:text-4xl">
             {post.title}
           </h1>
@@ -61,6 +76,18 @@ export default async function PublicPostPage({ params }: PageProps) {
         </header>
 
         <MarkdownContent content={post.content} />
+
+        {adjacent?.next ? (
+          <footer className="mt-12 border-t border-[var(--border)] pt-6">
+            <p className="mb-1 text-xs uppercase tracking-wide text-muted">Next in {adjacent.topic.name}</p>
+            <Link
+              href={`/${author.username}/${adjacent.next.slug}`}
+              className="link text-sm"
+            >
+              {adjacent.next.title} →
+            </Link>
+          </footer>
+        ) : null}
       </article>
 
       <PublicSiteFooter className="mt-12 text-center text-sm text-muted">

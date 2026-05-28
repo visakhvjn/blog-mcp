@@ -64,6 +64,24 @@ export default async function PublicTopicPage({ params }: PageProps) {
       </header>
 
       <section>
+        <div className="mb-8 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-5">
+          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted">
+            Post index
+          </h2>
+          <ol className="list-decimal space-y-1.5 pl-5 text-sm text-[var(--text)]">
+            {topic.posts.map((post, index) => (
+              <li key={post.id}>
+                <Link
+                  href={`/${author.username}/${post.slug}`}
+                  className="link"
+                >
+                  {post.title}
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <h2 className="mb-5 text-sm font-medium uppercase tracking-wide text-muted">
           Posts
         </h2>
