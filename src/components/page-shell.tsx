@@ -4,6 +4,7 @@ type PageShellProps = {
   children: ReactNode;
   wide?: boolean;
   centered?: boolean;
+  containerClassName?: string;
 };
 
 /**
@@ -15,18 +16,17 @@ export function PageShell({
   children,
   wide = false,
   centered = false,
+  containerClassName,
 }: PageShellProps) {
+  const defaultContainerClass = centered
+    ? "flex min-h-screen flex-col items-center justify-center px-5 py-12"
+    : wide
+      ? "page-shell-wide"
+      : "page-shell";
+
   return (
     <div className="page-bg">
-      <div
-        className={
-          centered
-            ? "flex min-h-screen flex-col items-center justify-center px-5 py-12"
-            : wide
-              ? "page-shell-wide"
-              : "page-shell"
-        }
-      >
+      <div className={containerClassName ?? defaultContainerClass}>
         {children}
       </div>
     </div>

@@ -69,7 +69,7 @@ export default async function PublicTopicPage({ params }: PageProps) {
             Post index
           </h2>
           <ol className="list-decimal space-y-1.5 pl-5 text-sm text-[var(--text)]">
-            {topic.posts.map((post, index) => (
+            {topic.posts.map((post) => (
               <li key={post.id}>
                 <Link
                   href={`/${author.username}/${post.slug}`}
