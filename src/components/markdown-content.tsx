@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, type CSSProperties, type ReactNode } from "react";
+import remarkGfm from "remark-gfm";
 import { MermaidDiagram } from "@/components/mermaid-diagram";
 
 type MarkdownContentProps = {
@@ -73,9 +74,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
         "[&_pre]:mb-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-[var(--border)] [&_pre]:bg-[var(--code-bg)] [&_pre]:p-4",
         "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-[var(--code-text)]",
         "[&_img]:mb-4 [&_img]:max-w-full [&_img]:rounded-xl",
+        "[&_del]:text-muted [&_del]:line-through",
       ].join(" ")}
     >
       <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => <h1 id={getHeadingId(children)}>{children}</h1>,
           h2: ({ children }) => <h2 id={getHeadingId(children)}>{children}</h2>,
@@ -90,6 +93,37 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
             }
             return <pre>{children}</pre>;
           },
+          table: ({ children }) => (
+            <div className="mb-4 overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+              <table className="w-full min-w-[16rem] border-collapse text-sm">
+                {children}
+              </table>
+            </div>
+          ),
+          thead: ({ children }) => (
+            <thead className="bg-[var(--surface-muted)]">{children}</thead>
+          ),
+          th: ({ children, style }) => (
+            <th
+              className="border-b border-[var(--border)] px-4 py-2.5 font-semibold text-[var(--text)]"
+              style={style as CSSProperties | undefined}
+            >
+              {children}
+            </th>
+          ),
+          td: ({ children, style }) => (
+            <td
+              className="border-b border-[var(--border-subtle)] px-4 py-2.5 text-[var(--text-secondary)]"
+              style={style as CSSProperties | undefined}
+            >
+              {children}
+            </td>
+          ),
+          tr: ({ children }) => (
+            <tr className="[&:last-child_td]:border-b-0 [&:last-child_th]:border-b-0">
+              {children}
+            </tr>
+          ),
         }}
       >
         {content}
