@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
-import type { ReactNode } from "react";
+import { isValidElement, type ReactNode } from "react";
+import { MermaidDiagram } from "@/components/mermaid-diagram";
 
 type MarkdownContentProps = {
   content: string;
@@ -19,6 +20,17 @@ function textFromNode(node: ReactNode): string {
     return textFromNode((node.props as { children?: ReactNode }).children);
   }
   return "";
+}
+
+function getMermaidChart(children: ReactNode): string | null {
+  if (!isValidElement(children)) {
+    return null;
+  }
+  const props = children.props as { className?: string; children?: ReactNode };
+  if (!props.className?.includes("language-mermaid")) {
+    return null;
+  }
+  return textFromNode(props.children).replace(/\n$/, "");
 }
 
 function slugify(text: string): string {
@@ -71,6 +83,13 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           h4: ({ children }) => <h4 id={getHeadingId(children)}>{children}</h4>,
           h5: ({ children }) => <h5 id={getHeadingId(children)}>{children}</h5>,
           h6: ({ children }) => <h6 id={getHeadingId(children)}>{children}</h6>,
+          pre: ({ children }) => {
+            const chart = getMermaidChart(children);
+            if (chart !== null) {
+              return <MermaidDiagram chart={chart} />;
+            }
+            return <pre>{children}</pre>;
+          },
         }}
       >
         {content}
