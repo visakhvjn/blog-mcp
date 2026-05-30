@@ -1,0 +1,363 @@
+openapi: 3.1.0
+info:
+  title: Blog MCP API
+  description: |
+    REST API for managing blog posts on Blog MCP.
+
+    Generate an API key at `/dashboard/settings` after signing in, then pass it as
+    `Authorization: Bearer blog_...` on every request.
+
+    For Cursor and ChatGPT MCP connectors, use the MCP endpoint at `/api/mcp` instead.
+  version: 1.0.0
+  license:
+    name: MIT
+
+servers:
+  - url: https://blog-mcp-five.vercel.app
+    description: Production
+  - url: http://localhost:3000
+    description: Local development
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/posts:
+    get:
+      operationId: listPosts
+      summary: List posts
+      description: Returns all posts for the authenticated user, newest first.
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Post list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      operationId: createPost
+      summary: Create a post
+      description: Creates a new markdown blog post. Slug is generated from the title if omitted.
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostRequest"
+            example:
+              title: Hello world
+              content: "# Hi\n\nMarkdown content."
+              status: DRAFT
+              excerpt: Optional short summary
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/posts/{id}:
+    parameters:
+      - $ref: "#/components/parameters/postId"
+
+    get:
+      operationId: getPost
+      summary: Get a post
+      description: Returns a single post by MongoDB id.
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Post found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      operationId: updatePost
+      summary: Update a post
+      description: Updates one or more fields on an existing post. Only include fields you want to change.
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostRequest"
+            example:
+              status: PUBLISHED
+      responses:
+        "200":
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      operationId: deletePost
+      summary: Delete a post
+      description: Permanently deletes a post by id.
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Post deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        API key from Dashboard → AI Publishing settings.
+        Format: `Bearer blog_...`
+
+  parameters:
+    postId:
+      name: id
+      in: path
+      required: true
+      description: MongoDB ObjectId of the post
+      schema:
+        type: string
+        example: 507f1f77bcf86cd799439011
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error: Unauthorized
+    BadRequest:
+      description: Invalid JSON or validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Post not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error: Post not found
+
+  schemas:
+    PostStatus:
+      type: string
+      enum:
+        - DRAFT
+        - PUBLISHED
+
+    PostSummary:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+        status:
+          $ref: "#/components/schemas/PostStatus"
+        excerpt:
+          type: string
+          nullable: true
+        topicId:
+          type: string
+          nullable: true
+        topicName:
+          type: string
+          nullable: true
+        topicSlug:
+          type: string
+          nullable: true
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Post:
+      type: object
+      required:
+        - id
+        - userId
+        - title
+        - slug
+        - content
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        topicId:
+          type: string
+          nullable: true
+        title:
+          type: string
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+        content:
+          type: string
+          description: Markdown body
+        excerpt:
+          type: string
+          nullable: true
+        status:
+          $ref: "#/components/schemas/PostStatus"
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreatePostRequest:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        content:
+          type: string
+          minLength: 1
+          maxLength: 100000
+          description: Markdown body
+        excerpt:
+          type: string
+          maxLength: 500
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 80
+          description: Optional custom slug; generated from title if omitted
+        status:
+          $ref: "#/components/schemas/PostStatus"
+          default: DRAFT
+        topicId:
+          type: string
+          description: Optional topic id to assign the post to
+
+    UpdatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        content:
+          type: string
+          minLength: 1
+          maxLength: 100000
+        excerpt:
+          type: string
+          maxLength: 500
+          nullable: true
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 80
+        status:
+          $ref: "#/components/schemas/PostStatus"
+        topicId:
+          type: string
+          nullable: true
+          description: Topic id to assign; null to remove from topic
+
+    PostListResponse:
+      type: object
+      required:
+        - posts
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostSummary"
+
+    PostResponse:
+      type: object
+      required:
+        - post
+      properties:
+        post:
+          $ref: "#/components/schemas/Post"
+
+    DeleteResponse:
+      type: object
+      required:
+        - ok
+      properties:
+        ok:
+          type: boolean
+          const: true
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string

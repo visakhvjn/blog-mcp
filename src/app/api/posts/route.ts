@@ -1,4 +1,4 @@
-import { isAuthError, requireSessionUser } from "@/lib/api-auth";
+import { isAuthError, requireApiUser } from "@/lib/api-auth";
 import { createPostSchema } from "@/lib/post-validation";
 import { createPost, listPostsByUser } from "@/services/post-service";
 import { NextResponse } from "next/server";
@@ -7,8 +7,8 @@ import { z } from "zod";
 /**
  * GET /api/posts — list all posts for the signed-in user.
  */
-export async function GET(): Promise<NextResponse> {
-  const userOrError = await requireSessionUser();
+export async function GET(request: Request): Promise<NextResponse> {
+  const userOrError = await requireApiUser(request);
   if (isAuthError(userOrError)) {
     return userOrError;
   }
@@ -21,7 +21,7 @@ export async function GET(): Promise<NextResponse> {
  * POST /api/posts — create a post (JSON body).
  */
 export async function POST(request: Request): Promise<NextResponse> {
-  const userOrError = await requireSessionUser();
+  const userOrError = await requireApiUser(request);
   if (isAuthError(userOrError)) {
     return userOrError;
   }

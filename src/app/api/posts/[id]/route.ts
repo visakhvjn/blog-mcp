@@ -1,4 +1,4 @@
-import { isAuthError, requireSessionUser } from "@/lib/api-auth";
+import { isAuthError, requireApiUser } from "@/lib/api-auth";
 import { updatePostSchema } from "@/lib/post-validation";
 import {
   deletePost,
@@ -14,10 +14,10 @@ type RouteContext = { params: Promise<{ id: string }> };
  * GET /api/posts/:id — fetch one post owned by the signed-in user.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   context: RouteContext,
 ): Promise<NextResponse> {
-  const userOrError = await requireSessionUser();
+  const userOrError = await requireApiUser(request);
   if (isAuthError(userOrError)) {
     return userOrError;
   }
@@ -38,7 +38,7 @@ export async function PATCH(
   request: Request,
   context: RouteContext,
 ): Promise<NextResponse> {
-  const userOrError = await requireSessionUser();
+  const userOrError = await requireApiUser(request);
   if (isAuthError(userOrError)) {
     return userOrError;
   }
@@ -77,10 +77,10 @@ export async function PATCH(
  * DELETE /api/posts/:id — delete a post owned by the signed-in user.
  */
 export async function DELETE(
-  _request: Request,
+  request: Request,
   context: RouteContext,
 ): Promise<NextResponse> {
-  const userOrError = await requireSessionUser();
+  const userOrError = await requireApiUser(request);
   if (isAuthError(userOrError)) {
     return userOrError;
   }

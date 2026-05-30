@@ -76,7 +76,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/dashboard/posts/new` | Create post (markdown) |
 | `/dashboard/posts/[id]/edit` | Edit or delete post |
 
-### REST API (session cookie — sign in via browser first)
+### REST API (session cookie or API key)
 
 | Method | Path | Action |
 |--------|------|--------|
@@ -85,6 +85,10 @@ Open [http://localhost:3000](http://localhost:3000).
 | `GET` | `/api/posts/:id` | Get one post |
 | `PATCH` | `/api/posts/:id` | Update post |
 | `DELETE` | `/api/posts/:id` | Delete post |
+
+**Auth:** Sign in via browser (session cookie) or `Authorization: Bearer <api_key>` from `/dashboard/settings`.
+
+**OpenAPI:** Public spec at `/openapi.yaml` · interactive docs at `/docs` · source file [`openapi.yaml`](openapi.yaml)
 
 Example create body:
 

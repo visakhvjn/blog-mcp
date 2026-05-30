@@ -8,6 +8,8 @@ const RESERVED = new Set([
   "topics",
   "settings",
   "profile",
+  "docs",
+  "openapi",
   "_next",
   "favicon.ico",
 ]);
