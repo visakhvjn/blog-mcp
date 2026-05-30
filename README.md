@@ -88,7 +88,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **Auth:** Sign in via browser (session cookie) or `Authorization: Bearer <api_key>` from `/dashboard/settings`.
 
-**OpenAPI:** Public spec at `/openapi.yaml` · interactive docs at `/docs` · source file [`openapi.yaml`](openapi.yaml)
+**OpenAPI:** Custom GPT import URL `/openapi.json` · YAML `/openapi.yaml` · docs `/docs`
 
 Example create body:
 

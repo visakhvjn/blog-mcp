@@ -48,7 +48,14 @@ export default function ApiDocsPage() {
               Blog MCP API
             </h1>
             <p className="text-sm text-muted">
-              OpenAPI spec:{" "}
+              Import URL for Custom GPT:{" "}
+              <a
+                href="/openapi.json"
+                className="text-[var(--accent)] hover:underline"
+              >
+                /openapi.json
+              </a>
+              {" · "}
               <a
                 href="/openapi.yaml"
                 className="text-[var(--accent)] hover:underline"

@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.1.1
 info:
   title: Blog MCP API
   description: |
@@ -15,8 +15,6 @@ info:
 servers:
   - url: https://blog-mcp-five.vercel.app
     description: Production
-  - url: http://localhost:3000
-    description: Local development
 
 security:
   - bearerAuth: []
@@ -69,15 +67,19 @@ paths:
           $ref: "#/components/responses/Unauthorized"
 
   /api/posts/{id}:
-    parameters:
-      - $ref: "#/components/parameters/postId"
-
     get:
       operationId: getPost
       summary: Get a post
       description: Returns a single post by MongoDB id.
       tags:
         - posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the post
+          schema:
+            type: string
       responses:
         "200":
           description: Post found
@@ -96,6 +98,13 @@ paths:
       description: Updates one or more fields on an existing post. Only include fields you want to change.
       tags:
         - posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the post
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -124,6 +133,13 @@ paths:
       description: Permanently deletes a post by id.
       tags:
         - posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the post
+          schema:
+            type: string
       responses:
         "200":
           description: Post deleted
@@ -144,16 +160,6 @@ components:
       description: |
         API key from Dashboard → AI Publishing settings.
         Format: `Bearer blog_...`
-
-  parameters:
-    postId:
-      name: id
-      in: path
-      required: true
-      description: MongoDB ObjectId of the post
-      schema:
-        type: string
-        example: 507f1f77bcf86cd799439011
 
   responses:
     Unauthorized:
@@ -352,7 +358,8 @@ components:
       properties:
         ok:
           type: boolean
-          const: true
+          enum:
+            - true
 
     ErrorResponse:
       type: object
