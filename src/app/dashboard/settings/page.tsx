@@ -15,7 +15,8 @@ export const metadata = {
 export default async function SettingsPage() {
   const user = await requireUser();
   const keys = await listApiKeysForUser(user.id);
-  const mcpUrl = `${getAppBaseUrl()}/api/mcp`;
+  const appBaseUrl = getAppBaseUrl();
+  const mcpUrl = `${appBaseUrl}/api/mcp`;
 
   return (
     <PageShell wide>
@@ -62,7 +63,7 @@ export default async function SettingsPage() {
         </div>
       </section>
 
-      <ClientConnectTabs mcpUrl={mcpUrl} />
+      <ClientConnectTabs mcpUrl={mcpUrl} appBaseUrl={appBaseUrl} />
     </PageShell>
   );
 }

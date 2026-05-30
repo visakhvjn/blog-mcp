@@ -1,16 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
-type ClientId = "cursor" | "vscode";
+type ClientId = "cursor" | "vscode" | "custom-gpt";
 
 const CLIENTS: { id: ClientId; label: string }[] = [
   { id: "cursor", label: "Cursor" },
   { id: "vscode", label: "VS Code" },
+  { id: "custom-gpt", label: "Custom GPT" },
 ];
 
 type ClientConnectTabsProps = {
   mcpUrl: string;
+  appBaseUrl: string;
 };
 
 function buildCursorConfig(mcpUrl: string) {
@@ -41,10 +44,11 @@ function buildVsCodeConfig(mcpUrl: string) {
 }
 
 /**
- * Tabbed setup instructions for AI Publishing clients (Cursor, VS Code, …).
+ * Tabbed setup instructions for AI Publishing clients (Cursor, VS Code, Custom GPT, …).
  */
-export function ClientConnectTabs({ mcpUrl }: ClientConnectTabsProps) {
+export function ClientConnectTabs({ mcpUrl, appBaseUrl }: ClientConnectTabsProps) {
   const [active, setActive] = useState<ClientId>("cursor");
+  const openapiUrl = `${appBaseUrl}/openapi.json`;
 
   return (
     <section className="card space-y-4 p-6">
@@ -160,6 +164,70 @@ export function ClientConnectTabs({ mcpUrl }: ClientConnectTabsProps) {
             </li>
           </ol>
           <pre className="code-block">{buildVsCodeConfig(mcpUrl)}</pre>
+        </div>
+      )}
+
+      {active === "custom-gpt" && (
+        <div className="space-y-4">
+          <p className="text-sm text-secondary">
+            Import the REST API into a Custom GPT as{" "}
+            <span className="font-medium text-[var(--text)]">Actions</span>.
+            Auth uses an API key from the section above (Bearer{" "}
+            <code className="rounded bg-[var(--surface-muted)] px-1 py-0.5 font-mono text-xs">
+              blog_…
+            </code>
+            ).
+          </p>
+          <ol className="list-decimal space-y-2 pl-5 text-sm text-secondary">
+            <li>Generate an API key above and copy it.</li>
+            <li>
+              In ChatGPT, go to{" "}
+              <span className="font-medium text-[var(--text)]">
+                My GPTs → Create
+              </span>{" "}
+              (or edit an existing GPT).
+            </li>
+            <li>
+              Open{" "}
+              <span className="font-medium text-[var(--text)]">Configure</span>
+              , scroll to{" "}
+              <span className="font-medium text-[var(--text)]">Actions</span>,
+              and click{" "}
+              <span className="font-medium text-[var(--text)]">
+                Create new action
+              </span>
+              .
+            </li>
+            <li>
+              Choose{" "}
+              <span className="font-medium text-[var(--text)]">
+                Import from URL
+              </span>{" "}
+              and paste:
+              <pre className="code-block mt-2">{openapiUrl}</pre>
+            </li>
+            <li>
+              Under Authentication, select{" "}
+              <span className="font-medium text-[var(--text)]">API Key</span>,
+              set Auth type to{" "}
+              <span className="font-medium text-[var(--text)]">Bearer</span>,
+              and paste your API key.
+            </li>
+            <li>
+              Save the GPT. Test with prompts like “List my blog posts” or
+              “Create a draft post titled Weekly update.”
+            </li>
+          </ol>
+          <p className="text-sm text-secondary">
+            OpenAPI reference:{" "}
+            <Link href="/docs" className="link">
+              /docs
+            </Link>
+            {" · "}
+            <a href={openapiUrl} className="link">
+              /openapi.json
+            </a>
+          </p>
         </div>
       )}
     </section>

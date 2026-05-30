@@ -8,11 +8,28 @@ type LandingPageProps = {
   session: AppSession | null;
 };
 
+const connectOptions = [
+  {
+    title: "Your IDE",
+    description:
+      "Plug Blog MCP into Cursor, VS Code, or any MCP-enabled editor. Draft, edit, and publish without leaving your codebase.",
+    detail: "MCP server + API key",
+    example: 'create_post → "Why I build in public"',
+  },
+  {
+    title: "ChatGPT",
+    description:
+      "Import the Blog MCP API into a Custom GPT as Actions. List posts, create drafts, manage topics, and publish from a conversation.",
+    detail: "OpenAPI Actions + API key",
+    example: '“List my blog posts and draft a weekly update.”',
+  },
+];
+
 const features = [
   {
     title: "Write with AI",
     description:
-      "Connect Cursor or any MCP client. Draft, edit, and publish posts without leaving your editor.",
+      "Publish from your IDE or ChatGPT — wherever you already work with an assistant.",
     icon: "✦",
   },
   {
@@ -37,9 +54,9 @@ const steps = [
   },
   {
     step: "02",
-    title: "Connect your AI tools",
+    title: "Connect your IDE or ChatGPT",
     description:
-      "Generate an API key and add Blog MCP to Cursor. Your assistant becomes your co-author.",
+      "Generate an API key and follow the setup guide — MCP for your editor, or Actions for a Custom GPT.",
   },
   {
     step: "03",
@@ -51,7 +68,7 @@ const steps = [
 
 const planFeatures = [
   "Personal blog at /your-username",
-  "AI Publishing for Cursor & VS Code",
+  "AI Publishing from your IDE or ChatGPT",
   "Unlimited published posts",
   "Topics to organize your writing",
   "Secure sign-in",
@@ -88,9 +105,8 @@ export function LandingPage({ session }: LandingPageProps) {
               <span className="text-[var(--accent)]">Powered by your assistant.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-secondary">
-              Blog MCP turns Cursor and other AI tools into your publishing
-              engine — so you can grow a real portfolio, not just a pile of
-              drafts.
+              Blog MCP turns your IDE or ChatGPT into a publishing engine — so
+              you can grow a real portfolio, not just a pile of drafts.
             </p>
             <div className="mt-10">
               <HomeCta
@@ -107,10 +123,10 @@ export function LandingPage({ session }: LandingPageProps) {
           {/* Hero visual */}
           <div className="mx-auto mt-16 max-w-4xl">
             <div className="card overflow-hidden p-2 shadow-md sm:p-3">
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid gap-2 sm:grid-cols-3">
                 <div className="rounded-lg bg-[var(--surface-muted)] p-5">
                   <p className="text-xs font-medium uppercase tracking-wide text-muted">
-                    In Cursor
+                    In your IDE
                   </p>
                   <p className="mt-3 font-mono text-sm text-[var(--text)]">
                     create_post → &quot;Why I build in public&quot;
@@ -118,6 +134,15 @@ export function LandingPage({ session }: LandingPageProps) {
                   <p className="mt-2 font-mono text-xs text-muted">
                     status: PUBLISHED
                   </p>
+                </div>
+                <div className="rounded-lg bg-[var(--surface-muted)] p-5">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted">
+                    In ChatGPT
+                  </p>
+                  <p className="mt-3 text-sm text-[var(--text)]">
+                    &quot;Draft a post about what I shipped this week.&quot;
+                  </p>
+                  <p className="mt-2 text-xs text-muted">Custom GPT Actions</p>
                 </div>
                 <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface)] p-5">
                   <p className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -133,6 +158,46 @@ export function LandingPage({ session }: LandingPageProps) {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Connect */}
+      <section id="connect" className="section-pad border-t border-[var(--border-subtle)]">
+        <div className="marketing-container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-semibold tracking-tight text-[var(--text)] sm:text-4xl">
+              Connect your IDE or ChatGPT
+            </h2>
+            <p className="mt-4 text-secondary">
+              Two ways to publish — pick the workflow that fits how you already
+              write with AI.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-6 sm:grid-cols-2">
+            {connectOptions.map((option) => (
+              <div key={option.title} className="card flex flex-col p-6">
+                <p className="text-xs font-medium uppercase tracking-wide text-[var(--accent)]">
+                  {option.detail}
+                </p>
+                <h3 className="mt-3 text-xl font-medium text-[var(--text)]">
+                  {option.title}
+                </h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-secondary">
+                  {option.description}
+                </p>
+                <p className="mt-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-muted)] px-3 py-2 font-mono text-xs text-[var(--text)]">
+                  {option.example}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-sm text-secondary">
+            Setup instructions live in{" "}
+            <Link href="/dashboard/settings" className="link">
+              AI Publishing settings
+            </Link>{" "}
+            after you sign in.
+          </p>
         </div>
       </section>
 
@@ -174,7 +239,8 @@ export function LandingPage({ session }: LandingPageProps) {
               From idea to live post in minutes
             </h2>
             <p className="mt-4 text-secondary">
-              A simple flow designed for builders who already live in their IDE.
+              A simple flow designed for builders who write with AI — in the
+              editor or in ChatGPT.
             </p>
           </div>
           <div className="mt-14 grid gap-8 sm:grid-cols-3">
@@ -245,6 +311,9 @@ export function LandingPage({ session }: LandingPageProps) {
             © {new Date().getFullYear()} Blog MCP · <BuiltByAttribution />
           </p>
           <div className="flex gap-6 text-sm text-secondary">
+            <a href="#connect" className="hover:text-[var(--text)]">
+              Connect
+            </a>
             <a href="#features" className="hover:text-[var(--text)]">
               Features
             </a>
