@@ -2,7 +2,7 @@ openapi: 3.1.1
 info:
   title: Blog MCP API
   description: |
-    REST API for managing blog posts on Blog MCP.
+    REST API for managing blog posts and topics on Blog MCP.
 
     Generate an API key at `/dashboard/settings` after signing in, then pass it as
     `Authorization: Bearer blog_...` on every request.
@@ -152,6 +152,136 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /api/topics:
+    get:
+      operationId: listTopics
+      summary: List topics
+      description: Returns all topics for the authenticated user, sorted by name.
+      tags:
+        - topics
+      responses:
+        "200":
+          description: Topic list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      operationId: createTopic
+      summary: Create a topic
+      description: Creates a topic to group related posts. Slug is generated from the name if omitted.
+      tags:
+        - topics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTopicRequest"
+            example:
+              name: Engineering
+              description: Long-form notes on building software.
+      responses:
+        "201":
+          description: Topic created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/topics/{id}:
+    get:
+      operationId: getTopic
+      summary: Get a topic
+      description: Returns a single topic by MongoDB id.
+      tags:
+        - topics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the topic
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Topic found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/TopicNotFound"
+
+    patch:
+      operationId: updateTopic
+      summary: Update a topic
+      description: Updates one or more fields on an existing topic. Only include fields you want to change.
+      tags:
+        - topics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the topic
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTopicRequest"
+            example:
+              name: Engineering notes
+      responses:
+        "200":
+          description: Topic updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/TopicNotFound"
+
+    delete:
+      operationId: deleteTopic
+      summary: Delete a topic
+      description: Permanently deletes a topic by id. Linked posts are unlinked, not deleted.
+      tags:
+        - topics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: MongoDB ObjectId of the topic
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Topic deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/TopicNotFound"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -184,6 +314,14 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
           example:
             error: Post not found
+    TopicNotFound:
+      description: Topic not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error: Topic not found
 
   schemas:
     PostStatus:
@@ -342,6 +480,117 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PostSummary"
+
+    TopicSummary:
+      type: object
+      required:
+        - id
+        - name
+        - slug
+        - postCount
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+        description:
+          type: string
+          nullable: true
+        postCount:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Topic:
+      type: object
+      required:
+        - id
+        - userId
+        - name
+        - slug
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateTopicRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 80
+          description: Optional custom slug; generated from name if omitted
+
+    UpdateTopicRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+          nullable: true
+        slug:
+          type: string
+          pattern: "^[a-z0-9-]+$"
+          maxLength: 80
+
+    TopicListResponse:
+      type: object
+      required:
+        - topics
+      properties:
+        topics:
+          type: array
+          items:
+            $ref: "#/components/schemas/TopicSummary"
+
+    TopicResponse:
+      type: object
+      required:
+        - topic
+      properties:
+        topic:
+          $ref: "#/components/schemas/Topic"
 
     PostResponse:
       type: object
