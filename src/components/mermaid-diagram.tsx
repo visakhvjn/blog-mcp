@@ -1,17 +1,17 @@
 "use client";
 
+import { useTheme } from "@/components/theme-provider";
 import { useEffect, useId, useState } from "react";
 
 type MermaidDiagramProps = {
   chart: string;
 };
 
-let mermaidInitialized = false;
-
 /**
  * Renders a Mermaid diagram from a fenced code block (```mermaid).
  */
 export function MermaidDiagram({ chart }: MermaidDiagramProps) {
+  const { theme } = useTheme();
   const reactId = useId().replace(/:/g, "");
   const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,15 +22,12 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
     async function render() {
       try {
         const mermaid = (await import("mermaid")).default;
-        if (!mermaidInitialized) {
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: "dark",
-            securityLevel: "strict",
-            fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-          });
-          mermaidInitialized = true;
-        }
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: theme === "dark" ? "dark" : "default",
+          securityLevel: "strict",
+          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+        });
 
         const renderId = `mermaid-${reactId}`;
         const { svg: rendered } = await mermaid.render(renderId, chart.trim());
@@ -51,7 +48,7 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
     return () => {
       cancelled = true;
     };
-  }, [chart, reactId]);
+  }, [chart, reactId, theme]);
 
   if (error) {
     return (

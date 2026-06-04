@@ -1,5 +1,6 @@
 import { getAppSession } from "@/lib/app-session";
 import { SignInButton } from "@/components/sign-in-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 
 /**
@@ -39,7 +40,8 @@ export async function SiteNavbar() {
             </Link>
           </nav>
 
-          <div className="flex shrink-0 items-center gap-3 text-sm">
+          <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
+            <ThemeToggle />
             {publicBlogHref ? (
               <Link href={publicBlogHref} className="link hidden sm:inline">
                 My blog

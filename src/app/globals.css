@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-:root {
+:root,
+[data-theme="dark"] {
   --bg: #120d0c;
   --bg-elevated: #1a1210;
   --surface: #221816;
@@ -20,12 +21,51 @@
   --danger: #ef5350;
   --danger-soft: rgb(239 83 80 / 0.12);
   --warning-soft: rgb(255 152 0 / 0.12);
+  --warning-title: #ffcc80;
   --code-bg: #1a1210;
   --code-text: #f5f0eb;
   --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.35);
   --shadow-md: 0 8px 28px rgb(0 0 0 / 0.45);
+  --hero-glow-accent: rgb(255 87 34 / 0.22);
+  --hero-glow-secondary: rgb(255 152 0 / 0.1);
+  --hero-bg-start: #2b1c18;
+  --hero-bg-mid: #120d0c;
+  --hero-bg-end: #120d0c;
   --radius: 0.75rem;
   color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #faf7f5;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-muted: #f3eeea;
+  --border: #ddd4cc;
+  --border-subtle: #ebe4de;
+  --text: #1a1210;
+  --text-secondary: #4a403a;
+  --text-muted: #7a6e67;
+  --accent: #e64a19;
+  --accent-hover: #d84315;
+  --accent-gradient: linear-gradient(135deg, #e64a19 0%, #f57c00 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #d84315 0%, #ef6c00 100%);
+  --accent-soft: rgb(230 74 25 / 0.12);
+  --accent-muted: #bf360c;
+  --accent-foreground: #ffffff;
+  --danger: #d32f2f;
+  --danger-soft: rgb(211 47 47 / 0.1);
+  --warning-soft: rgb(245 124 0 / 0.12);
+  --warning-title: #e65100;
+  --code-bg: #f5f0eb;
+  --code-text: #2b1c18;
+  --shadow-sm: 0 1px 3px rgb(26 18 16 / 0.08);
+  --shadow-md: 0 8px 28px rgb(26 18 16 / 0.12);
+  --hero-glow-accent: rgb(255 87 34 / 0.12);
+  --hero-glow-secondary: rgb(255 152 0 / 0.08);
+  --hero-bg-start: #f3eeea;
+  --hero-bg-mid: #faf7f5;
+  --hero-bg-end: #faf7f5;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -223,7 +263,7 @@ body {
 .alert-warning-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffcc80;
+  color: var(--warning-title);
 }
 
 .code-block {
@@ -293,13 +333,18 @@ body {
   background:
     radial-gradient(
       ellipse 80% 55% at 50% -8%,
-      rgb(255 87 34 / 0.22),
+      var(--hero-glow-accent),
       transparent
     ),
     radial-gradient(
       ellipse 50% 40% at 85% 15%,
-      rgb(255 152 0 / 0.1),
+      var(--hero-glow-secondary),
       transparent
     ),
-    linear-gradient(180deg, #2b1c18 0%, #120d0c 48%, #120d0c 100%);
+    linear-gradient(
+      180deg,
+      var(--hero-bg-start) 0%,
+      var(--hero-bg-mid) 48%,
+      var(--hero-bg-end) 100%
+    );
 }
