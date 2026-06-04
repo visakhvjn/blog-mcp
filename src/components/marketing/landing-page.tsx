@@ -1,5 +1,4 @@
 import { HomeCta } from "@/components/marketing/home-cta";
-import { SiteHeader } from "@/components/marketing/site-header";
 import { BuiltByAttribution } from "@/components/site-footer";
 import Link from "next/link";
 import type { AppSession } from "@/lib/app-session";
@@ -86,11 +85,6 @@ export function LandingPage({ session }: LandingPageProps) {
 
   return (
     <div className="hero-glow min-h-screen">
-      <SiteHeader
-        isAuthenticated={isAuthenticated}
-        dashboardHref={dashboardHref}
-      />
-
       {/* Hero */}
       <section className="section-pad pt-16 sm:pt-24">
         <div className="marketing-container">
