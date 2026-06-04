@@ -92,7 +92,7 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
             </section>
           ) : null}
 
-          {allPosts.length > 0 ? (
+          {!hasTopics && allPosts.length > 0 ? (
             <section>
               <h2 className="mb-5 text-sm font-bold uppercase tracking-wide text-muted">
                 Posts

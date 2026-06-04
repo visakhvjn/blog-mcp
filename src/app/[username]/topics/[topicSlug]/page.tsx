@@ -49,11 +49,8 @@ export default async function PublicTopicPage({ params }: PageProps) {
         ← @{author.username}
       </Link>
 
-      <header className="mb-10 mt-6 border-b border-[var(--border-subtle)] pb-8">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted">
-          Topic
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[var(--text)]">
+      <header className="mb-4 mt-6">
+        <h1 className="text-3xl font-semibold tracking-tight text-[var(--text)]">
           {topic.name}
         </h1>
         {topic.description ? (
@@ -66,14 +63,14 @@ export default async function PublicTopicPage({ params }: PageProps) {
       <section>
         <div className="mb-8 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-5">
           <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted">
-            Post index
+            Contents
           </h2>
-          <ol className="list-decimal space-y-1.5 pl-5 text-sm text-[var(--text)]">
+          <ol className="list-decimal list-outside space-y-1 pl-6 text-sm text-[var(--text)] [&>li]:pl-2">
             {topic.posts.map((post) => (
               <li key={post.id}>
                 <Link
                   href={`/${author.username}/${post.slug}`}
-                  className="link"
+                  className="link font-medium"
                 >
                   {post.title}
                 </Link>
@@ -82,10 +79,11 @@ export default async function PublicTopicPage({ params }: PageProps) {
           </ol>
         </div>
 
-        <h2 className="mb-5 text-sm font-medium uppercase tracking-wide text-muted">
-          Posts
-        </h2>
-        <PublicPostList username={author.username} posts={topic.posts} />
+        <PublicPostList
+          username={author.username}
+          posts={topic.posts}
+          descriptionClassName="text-xs"
+        />
       </section>
 
       <PublicSiteFooter />

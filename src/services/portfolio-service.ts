@@ -1,4 +1,5 @@
 import { isReservedUsername } from "@/lib/reserved-usernames";
+import { getPostDescription } from "@/lib/post-description";
 import { prisma } from "@/lib/prisma";
 import { PostStatus } from "@prisma/client";
 
@@ -21,9 +22,42 @@ export type PublicPostSummary = {
   title: string;
   slug: string;
   excerpt: string | null;
+  description: string | null;
   publishedAt: Date | null;
   createdAt: Date;
 };
+
+const publicPostSelect = {
+  id: true,
+  title: true,
+  slug: true,
+  excerpt: true,
+  content: true,
+  publishedAt: true,
+  createdAt: true,
+} as const;
+
+type PublicPostRow = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  publishedAt: Date | null;
+  createdAt: Date;
+};
+
+function toPublicPostSummary(post: PublicPostRow): PublicPostSummary {
+  return {
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    description: getPostDescription(post.excerpt, post.content),
+    publishedAt: post.publishedAt,
+    createdAt: post.createdAt,
+  };
+}
 
 export type TopicAdjacentPosts = {
   topic: {
@@ -102,18 +136,13 @@ export async function getPublicAuthorStats(
 export async function listPublishedPostsForAuthor(
   userId: string,
 ): Promise<PublicPostSummary[]> {
-  return prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where: { userId, status: PostStatus.PUBLISHED },
     orderBy: { publishedAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      publishedAt: true,
-      createdAt: true,
-    },
+    select: publicPostSelect,
   });
+
+  return posts.map(toPublicPostSummary);
 }
 
 /**
@@ -179,14 +208,7 @@ export async function getTopicAdjacentPostsForPublishedPost(
       posts: {
         where: { status: PostStatus.PUBLISHED },
         orderBy: [{ publishedAt: "asc" }, { createdAt: "asc" }],
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          publishedAt: true,
-          createdAt: true,
-        },
+        select: publicPostSelect,
       },
     },
   });
@@ -205,8 +227,11 @@ export async function getTopicAdjacentPostsForPublishedPost(
       name: topic.name,
       slug: topic.slug,
     },
-    previous: index > 0 ? topic.posts[index - 1] : null,
-    next: index < topic.posts.length - 1 ? topic.posts[index + 1] : null,
+    previous: index > 0 ? toPublicPostSummary(topic.posts[index - 1]) : null,
+    next:
+      index < topic.posts.length - 1
+        ? toPublicPostSummary(topic.posts[index + 1])
+        : null,
   };
 }
 
@@ -231,19 +256,15 @@ export async function listPublicTopicsWithPosts(
       posts: {
         where: { status: PostStatus.PUBLISHED },
         orderBy: { createdAt: "asc" },
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          publishedAt: true,
-          createdAt: true,
-        },
+        select: publicPostSelect,
       },
     },
   });
 
-  return topics;
+  return topics.map((topic) => ({
+    ...topic,
+    posts: topic.posts.map(toPublicPostSummary),
+  }));
 }
 
 /**
@@ -253,18 +274,13 @@ export async function listPublicTopicsWithPosts(
 export async function listPublishedPostsWithoutTopic(
   userId: string,
 ): Promise<PublicPostSummary[]> {
-  return prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     where: { userId, status: PostStatus.PUBLISHED, topicId: null },
     orderBy: { publishedAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      publishedAt: true,
-      createdAt: true,
-    },
+    select: publicPostSelect,
   });
+
+  return posts.map(toPublicPostSummary);
 }
 
 /**
@@ -285,14 +301,7 @@ export async function getPublicTopicByUsernameAndSlug(
       posts: {
         where: { status: PostStatus.PUBLISHED },
         orderBy: { createdAt: "asc" },
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          publishedAt: true,
-          createdAt: true,
-        },
+        select: publicPostSelect,
       },
     },
   });
@@ -301,5 +310,8 @@ export async function getPublicTopicByUsernameAndSlug(
     return null;
   }
 
-  return topic;
+  return {
+    ...topic,
+    posts: topic.posts.map(toPublicPostSummary),
+  };
 }
