@@ -75,9 +75,18 @@ export default async function PublicPostPage({ params }: PageProps) {
       <div className="mx-auto w-full max-w-3xl">
         <article className="min-w-0">
           <nav className="mb-8">
-            <Link href={`/${author.username}`} className="link text-sm">
-              ← @{author.username}
-            </Link>
+            {adjacent ? (
+              <Link
+                href={`/${author.username}/topics/${adjacent.topic.slug}`}
+                className="link text-sm"
+              >
+                ← {adjacent.topic.name}
+              </Link>
+            ) : (
+              <Link href={`/${author.username}`} className="link text-sm">
+                ← @{author.username}
+              </Link>
+            )}
           </nav>
           <header className="mb-10 border-b border-[var(--border)] pb-8">
             {adjacent?.previous ? (

@@ -46,10 +46,7 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
   return (
     <PageShell wide>
       <header className="mb-10 border-b border-[var(--border-subtle)] pb-8">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted">
-          Blog
-        </p>
-        <div className="mt-4 flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {author.image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -85,9 +82,6 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
         <div className="space-y-10">
           {hasTopics ? (
             <section>
-              <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted">
-                Topics
-              </h2>
               <PublicTopicCards username={author.username} topics={topics} />
             </section>
           ) : null}
