@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 import Link from "next/link";
 
 declare global {
@@ -11,7 +12,7 @@ declare global {
 }
 
 /**
- * Public Swagger UI for the Blog MCP REST API.
+ * Public Swagger UI for the dumpd! REST API.
  */
 export default function ApiDocsPage() {
   const [ready, setReady] = useState(false);
@@ -45,8 +46,9 @@ export default function ApiDocsPage() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-lg font-medium text-[var(--text)]">
-              Blog MCP API
+              {BRAND_NAME} API
             </h1>
+            <p className="text-sm text-muted">{BRAND_TAGLINE}</p>
             <p className="text-sm text-muted">
               Import URL for Custom GPT:{" "}
               <a

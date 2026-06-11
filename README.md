@@ -1,4 +1,6 @@
-# Blog MCP
+# dumpd!
+
+the content engine
 
 Phased blogging platform with MCP authoring for Cursor. **Phase 1** includes Auth0 sign-in, username onboarding, and logout.
 

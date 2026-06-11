@@ -1,10 +1,11 @@
 import { OnboardingForm } from "@/components/onboarding-form";
 import { PageShell } from "@/components/page-shell";
+import { BRAND_NAME } from "@/lib/brand";
 import { getAppSession } from "@/lib/app-session";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Choose username — Blog MCP",
+  title: `Choose username — ${BRAND_NAME}`,
 };
 
 export default async function OnboardingPage() {

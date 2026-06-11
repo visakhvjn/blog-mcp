@@ -41,7 +41,7 @@ export default async function PublicTopicPage({ params }: PageProps) {
   }
 
   return (
-    <PageShell wide>
+    <PageShell discover>
       <Link
         href={`/${author.username}`}
         className="link text-sm"

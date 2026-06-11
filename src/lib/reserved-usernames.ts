@@ -9,6 +9,7 @@ const RESERVED = new Set([
   "settings",
   "profile",
   "docs",
+  "about",
   "openapi",
   "_next",
   "favicon.ico",

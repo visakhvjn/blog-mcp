@@ -2,12 +2,13 @@ import { ProfileSummaryForm } from "@/components/profile-summary-form";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PageShell } from "@/components/page-shell";
+import { BRAND_NAME } from "@/lib/brand";
 import { requireUser } from "@/lib/require-user";
 import { getUserProfile } from "@/services/user-service";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Profile — Blog MCP",
+  title: `Profile — ${BRAND_NAME}`,
 };
 
 export default async function ProfilePage() {

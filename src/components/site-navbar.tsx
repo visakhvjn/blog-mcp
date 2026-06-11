@@ -1,4 +1,5 @@
 import { getAppSession } from "@/lib/app-session";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 import { SignInButton } from "@/components/sign-in-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
@@ -10,43 +11,37 @@ export async function SiteNavbar() {
   const session = await getAppSession();
   const isAuthenticated = Boolean(session?.user);
   const dashboardHref = session?.user?.username ? "/dashboard" : "/onboarding";
-  const publicBlogHref = session?.user?.username
-    ? `/${session.user.username}`
-    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/92 backdrop-blur-md">
       <div className="marketing-container flex h-14 items-center justify-between gap-4">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2 font-semibold text-[var(--text)]"
+          className="flex shrink-0 items-center gap-2 text-[var(--text)]"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-sm font-semibold text-[var(--accent)]">
-            B
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-xs font-semibold text-[var(--accent)]">
+            d!
           </span>
-          Blog MCP
+          <span className="flex flex-col leading-tight">
+            <span className="text-sm font-semibold sm:text-base">{BRAND_NAME}</span>
+            <span className="hidden text-xs font-normal text-muted sm:block">
+              {BRAND_TAGLINE}
+            </span>
+          </span>
         </Link>
 
-        <div className="flex items-center gap-6 sm:gap-8">
-          <nav className="hidden items-center gap-8 text-sm font-medium text-secondary md:flex">
-            <Link href="/#features" className="transition hover:text-[var(--text)]">
-              Features
+        <div className="flex items-center gap-4 sm:gap-6">
+          <nav className="flex items-center gap-5 text-sm font-medium text-secondary sm:gap-8">
+            <Link href="/" className="transition hover:text-[var(--text)]">
+              Discover
             </Link>
-            <Link href="/#how-it-works" className="transition hover:text-[var(--text)]">
-              How it works
-            </Link>
-            <Link href="/#pricing" className="transition hover:text-[var(--text)]">
-              Pricing
+            <Link href="/about" className="transition hover:text-[var(--text)]">
+              About
             </Link>
           </nav>
 
           <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
             <ThemeToggle />
-            {publicBlogHref ? (
-              <Link href={publicBlogHref} className="link hidden sm:inline">
-                My blog
-              </Link>
-            ) : null}
             {isAuthenticated ? (
               <Link href={dashboardHref} className="btn-primary px-3 py-1.5">
                 Dashboard

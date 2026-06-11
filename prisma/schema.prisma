@@ -74,6 +74,7 @@ model Post {
   @@unique([userId, slug])
   @@index([userId, status])
   @@index([userId, topicId])
+  @@index([status, publishedAt])
 }
 
 enum PostStatus {

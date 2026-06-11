@@ -1,4 +1,5 @@
 import { listPostsByUser } from "@/services/post-service";
+import { BRAND_NAME } from "@/lib/brand";
 import { requireUser } from "@/lib/require-user";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -9,7 +10,7 @@ import Link from "next/link";
 import { PostStatus } from "@prisma/client";
 
 export const metadata = {
-  title: "Posts — Blog MCP",
+  title: `Posts — ${BRAND_NAME}`,
 };
 
 export default async function PostsPage() {

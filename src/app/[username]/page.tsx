@@ -44,7 +44,7 @@ export default async function PublicPortfolioPage({ params }: PageProps) {
   const hasTopics = topics.length > 0;
 
   return (
-    <PageShell wide>
+    <PageShell discover>
       <header className="mb-10 border-b border-[var(--border-subtle)] pb-8">
         <div className="flex items-center gap-4">
           {author.image ? (

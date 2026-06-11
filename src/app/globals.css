@@ -108,6 +108,31 @@ body {
   padding: 2.5rem 1.25rem 4rem;
 }
 
+.page-shell-discover {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.discover-layout {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .discover-layout {
+    grid-template-columns: minmax(0, 1fr) 17.5rem;
+    align-items: start;
+  }
+
+  .discover-sidebar {
+    position: sticky;
+    top: 5rem;
+  }
+}
+
 .card {
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -347,4 +372,205 @@ body {
       var(--hero-bg-mid) 48%,
       var(--hero-bg-end) 100%
     );
+}
+
+/* Engine hero diagram */
+.engine-visual {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .engine-visual {
+    grid-template-columns: 1fr auto 1.4fr auto 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+}
+
+.engine-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.engine-column-center {
+  align-items: center;
+}
+
+.engine-column-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.engine-assistants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.engine-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+
+.engine-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .engine-connector {
+    min-height: auto;
+    width: 2rem;
+  }
+}
+
+.engine-connector-line {
+  position: relative;
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--border-subtle),
+    var(--accent-muted),
+    var(--border-subtle)
+  );
+  animation: engine-flow 2.4s ease-in-out infinite;
+}
+
+@media (max-width: 639px) {
+  .engine-connector-line {
+    width: 2px;
+    height: 1.5rem;
+    background: linear-gradient(
+      180deg,
+      var(--border-subtle),
+      var(--accent-muted),
+      var(--border-subtle)
+    );
+  }
+
+  .engine-connector-line::after {
+    bottom: -4px;
+    left: 50%;
+    top: auto;
+    right: auto;
+    transform: translateX(-50%);
+    border-width: 5px 4px 0;
+    border-color: var(--accent-muted) transparent transparent;
+  }
+}
+
+@media (min-width: 640px) {
+  .engine-connector-line {
+    width: 100%;
+    height: 2px;
+  }
+}
+
+.engine-connector-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  transform: translateY(-50%);
+  border: 4px solid transparent;
+  border-left-color: var(--accent-muted);
+}
+
+@keyframes engine-flow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engine-connector-line {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+.engine-node {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  padding: 1.25rem;
+  box-shadow:
+    0 0 0 1px rgb(255 87 34 / 0.08),
+    0 8px 32px var(--hero-glow-accent);
+}
+
+.engine-node-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.engine-node-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.engine-tools {
+  margin-top: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  list-style: none;
+  padding: 0;
+}
+
+.engine-tool {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.6875rem;
+  color: var(--accent-muted);
+}
+
+.engine-output {
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  padding: 1rem;
+}
+
+.engine-output-title {
+  margin-top: 0.625rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.engine-output-url {
+  margin-top: 0.375rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.engine-output-meta {
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
 }

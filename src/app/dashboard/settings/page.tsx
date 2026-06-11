@@ -4,12 +4,13 @@ import { DeleteApiKeyButton } from "@/components/delete-api-key-button";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PageShell } from "@/components/page-shell";
+import { BRAND_NAME } from "@/lib/brand";
 import { getAppBaseUrl } from "@/lib/app-base-url";
 import { requireUser } from "@/lib/require-user";
 import { listApiKeysForUser } from "@/services/api-key-service";
 
 export const metadata = {
-  title: "AI Publishing settings — Blog MCP",
+  title: `AI Publishing settings — ${BRAND_NAME}`,
 };
 
 export default async function SettingsPage() {

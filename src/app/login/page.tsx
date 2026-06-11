@@ -1,9 +1,10 @@
 import { SignInButton } from "@/components/sign-in-button";
+import { BRAND_NAME } from "@/lib/brand";
 import { PageShell } from "@/components/page-shell";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Sign in — Blog MCP",
+  title: `Sign in — ${BRAND_NAME}`,
 };
 
 type PageProps = {

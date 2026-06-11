@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BRAND_NAME } from "@/lib/brand";
 import Link from "next/link";
 
 const PORTFOLIO_URL = "https://www.visakhvijayan.com/";
@@ -33,7 +34,7 @@ export function PublicSiteFooter({
       {children}
       <p className={children ? "mt-2" : undefined}>
         <Link href="/" className="link">
-          Blog MCP
+          {BRAND_NAME}
         </Link>
         {" · "}
         <BuiltByAttribution />

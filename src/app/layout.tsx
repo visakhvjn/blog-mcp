@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteNavbar } from "@/components/site-navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { BRAND_TAGLINE, BRAND_TITLE } from "@/lib/brand";
 import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blog MCP",
-  description: "Blogging platform with MCP-powered authoring",
+  title: BRAND_TITLE,
+  description: `${BRAND_TAGLINE} for AI assistants. Connect Cursor, VS Code, or ChatGPT via MCP and publish to a live portfolio.`,
 };
 
 export default function RootLayout({

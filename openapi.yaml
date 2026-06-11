@@ -1,8 +1,8 @@
 openapi: 3.1.1
 info:
-  title: Blog MCP API
+  title: dumpd! API
   description: |
-    REST API for managing blog posts and topics on Blog MCP.
+    REST API for managing blog posts and topics on dumpd! — the content engine.
 
     Generate an API key at `/dashboard/settings` after signing in, then pass it as
     `Authorization: Bearer blog_...` on every request.

@@ -2,12 +2,13 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardOverview } from "@/components/dashboard-overview";
 import { PageShell } from "@/components/page-shell";
+import { BRAND_NAME } from "@/lib/brand";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/require-user";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Dashboard — Blog MCP",
+  title: `Dashboard — ${BRAND_NAME}`,
 };
 
 export default async function DashboardPage() {

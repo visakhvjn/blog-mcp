@@ -16,7 +16,7 @@ export function PublicTopicCards({ username, topics }: PublicTopicCardsProps) {
   }
 
   return (
-    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {topics.map((topic) => {
         const postCount = topic.posts.length;
 

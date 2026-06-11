@@ -1,4 +1,5 @@
 import { listTopicsByUser } from "@/services/topic-service";
+import { BRAND_NAME } from "@/lib/brand";
 import { requireUser } from "@/lib/require-user";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -8,7 +9,7 @@ import { McpEditingNotice } from "@/components/mcp-editing-notice";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Topics — Blog MCP",
+  title: `Topics — ${BRAND_NAME}`,
 };
 
 export default async function TopicsPage() {
