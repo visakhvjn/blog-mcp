@@ -1,14 +1,17 @@
-import { getAppSession } from "@/lib/app-session";
+import type { AppSession } from "@/lib/app-session";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 import { SignInButton } from "@/components/sign-in-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 
+type SiteNavbarProps = {
+  session: AppSession | null;
+};
+
 /**
  * Site-wide top navigation with brand, marketing links, and auth actions.
  */
-export async function SiteNavbar() {
-  const session = await getAppSession();
+export async function SiteNavbar({ session }: SiteNavbarProps) {
   const isAuthenticated = Boolean(session?.user);
   const dashboardHref = session?.user?.username ? "/dashboard" : "/onboarding";
 
@@ -30,8 +33,8 @@ export async function SiteNavbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-6">
-          <nav className="flex items-center gap-5 text-sm font-medium text-secondary sm:gap-8">
+        <div className="flex items-center gap-3 sm:gap-6">
+          <nav className="flex items-center gap-4 text-sm font-medium text-secondary sm:gap-8">
             <Link href="/" className="transition hover:text-[var(--text)]">
               Discover
             </Link>
@@ -40,7 +43,7 @@ export async function SiteNavbar() {
             </Link>
           </nav>
 
-          <div className="flex shrink-0 items-center gap-2 text-sm sm:gap-3">
+          <div className="hidden shrink-0 items-center gap-2 text-sm sm:flex sm:gap-3">
             <ThemeToggle />
             {isAuthenticated ? (
               <Link href={dashboardHref} className="btn-primary px-3 py-1.5">
@@ -52,6 +55,10 @@ export async function SiteNavbar() {
                 className="btn-primary px-3 py-1.5"
               />
             )}
+          </div>
+
+          <div className="sm:hidden">
+            <ThemeToggle />
           </div>
         </div>
       </div>

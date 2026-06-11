@@ -340,6 +340,34 @@ body {
   box-shadow: 0 6px 28px rgb(255 87 34 / 0.5);
 }
 
+.btn-mobile-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.25rem;
+  width: 3.25rem;
+  border-radius: 9999px;
+  background: var(--accent-gradient);
+  padding: 0;
+  color: var(--accent-foreground);
+  box-shadow: 0 8px 28px rgb(255 87 34 / 0.48);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn-mobile-fab:hover {
+  background: var(--accent-gradient-hover);
+  box-shadow: 0 10px 32px rgb(255 87 34 / 0.58);
+}
+
+@media (max-width: 639px) {
+  body.mobile-auth-fab-offset {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .pricing-card {
   border-radius: 1rem;
   border: 1px solid var(--border);
